@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router';
-import { getInfo } from '../redux/slice/userSlice';
-import { useNavigate } from 'react-router-dom';
-import { CircularProgress } from '@mui/material';
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { getInfo } from "../redux/slice/userSlice";
+import { useNavigate } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 
 export const PrivateRouter = ({
   component: Component,
@@ -26,7 +26,7 @@ export const PrivateRouter = ({
     if (
       check === true ||
       check === false ||
-      String(typeof check) === 'object' ||
+      String(typeof check) === "object" ||
       check === undefined
     ) {
       setIsFectch(true);
@@ -40,7 +40,7 @@ export const PrivateRouter = ({
 
   const render = () => {
     if (isAccount === false) {
-      return navigate('/login');
+      return navigate("/login");
     }
 
     return isFetch === false ? (
@@ -54,7 +54,7 @@ export const PrivateRouter = ({
         page={<Page title={title} />}
       />
     ) : (
-      navigate('/')
+      navigate("/")
     );
   };
 

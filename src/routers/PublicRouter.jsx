@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
-import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 
 export const PublicRouter = ({
   component: Component,
@@ -12,19 +12,29 @@ export const PublicRouter = ({
   page: Page,
   title,
 }) => {
-  const isAccount = useSelector((state) => state.userSlice.isAccount);
+  // const isAccount = useSelector((state) => state.userSlice.isAccount);
 
-  if (!isAccount) {
-    return (
-      <Layout
-        sidebar={<Sidebar />}
-        header={<Header />}
-        children={<Component />}
-        footer={<Footer />}
-        page={<Page title={title} />}
-      />
-    );
-  }
+  // if (!isAccount) {
+  //   return (
+  //     <Layout
+  //       sidebar={<Sidebar />}
+  //       header={<Header />}
+  //       children={<Component />}
+  //       footer={<Footer />}
+  //       page={<Page title={title} />}
+  //     />
+  //   );
+  // }
 
-  return <Navigate to="/" replace />;
+  // return <Navigate to="/" replace />;
+
+  return (
+    <Layout
+      sidebar={<Sidebar />}
+      header={<Header />}
+      children={<Component />}
+      footer={<Footer />}
+      page={<Page title={title} />}
+    />
+  );
 };

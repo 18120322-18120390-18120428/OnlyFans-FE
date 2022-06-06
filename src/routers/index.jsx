@@ -6,7 +6,7 @@ import { PublicRouter } from './PublicRouter';
 import { PrivateRouter } from './PrivateRouter';
 
 import { Header, Footer } from '../components';
-import { CreatePost, Home, Login, PersonalInfo } from '../containers';
+import { CreatePost, Home, Login, PersonalInfo, Register } from '../containers';
 
 export const Routers = () => {
   return (
@@ -28,6 +28,11 @@ export const Routers = () => {
           exact={true}
           path={'/login'}
           element={<PublicRouter component={Login} layout={BlankLayout} />}
+        />
+        <Route
+          exact={true}
+          path={'/register'}
+          element={<PublicRouter component={Register} layout={BlankLayout} />}
         />
         <Route
           exact={true}

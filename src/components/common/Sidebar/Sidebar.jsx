@@ -19,7 +19,6 @@ import {
   MenuItem,
 } from '@mui/material';
 
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 

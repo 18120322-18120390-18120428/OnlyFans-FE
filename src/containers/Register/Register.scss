@@ -1,0 +1,108 @@
+.register::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 50%;
+    content: "";
+    background: url(https://static.onlyfans.com/theme/onlyfans/spa/img/logo_icon_white.svg) 100% -6% no-repeat;
+    background-size: auto 190%;
+    opacity: 0.12;
+    pointer-events: none;
+}
+
+.register {
+    position: relative;
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    background: linear-gradient(90deg, #00aff0 50%, transparent 50.01%);
+    padding: 80px 0;
+
+    &__container::before {
+        content: " ";
+        display: table;
+    }
+
+    &__container {
+        flex: 1;
+        padding-top: 0;
+        padding-bottom: 0;
+        max-width: 1312px;
+        width: 100%;
+        padding-right: 16px;
+        padding-left: 16px;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    &__content {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        align-items: stretch;
+        flex: 1;
+    }
+
+    &__col {
+        width: 50%;
+        display: flex;
+        justify-content: center;
+    }
+
+    &__body {
+        width: 344px;
+    }
+
+    &__logo {
+        margin: 0 0 13px;
+        color: #fff;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__text {
+        color: #fefefe;
+        font-size: 32px;
+        line-height: 40px;
+        font-weight: 400;
+        margin: 0 0 30px;
+    }
+
+    &__link {
+        text-decoration: none;
+        color: #00aff0;
+    }
+
+    &__issues {
+        color: #8a96a3;
+        font-size: 12px;
+        padding: 22px 0;
+        border-bottom: 1px solid rgba(138, 150, 163, 0.25);
+        max-width: 280px;
+        margin: 0 auto;
+        text-align: center;
+
+        a {
+            color: #00aff0;
+            text-decoration: none;
+            background-color: transparent;
+        }
+    }
+
+    &__login {
+        font-size: 14px;
+        line-height: 20px;
+        padding: 30px 0;
+        font-weight: 400;
+        text-align: center;
+
+        a {
+            color: #00aff0;
+            text-decoration: none;
+            background-color: transparent;
+        }
+    }
+}

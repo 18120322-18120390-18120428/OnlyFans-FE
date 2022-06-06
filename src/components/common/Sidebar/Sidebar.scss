@@ -1,0 +1,35 @@
+.sidebar {
+    &__info {
+        padding: 0 0 5px 16px;
+    }
+
+    &__link {
+        color: var(--text-color);
+        font-size: 14px;
+        display: inline-block;
+        max-width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        position: relative;
+        background-color: transparent;
+        text-decoration: none;
+    }
+
+    &__link:nth-child(2)::before {
+        content: "\2022";
+        font-size: 14px;
+        opacity: 0.75;
+        color: var(--title-color);
+        margin-left: 6px;
+        margin-right: 6px;
+    }
+
+    &__count {
+        font-weight: 500;
+    }
+
+    &__text {
+        margin-left: 4px;
+    }
+}

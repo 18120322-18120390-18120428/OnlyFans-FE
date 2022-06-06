@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 
 export const PublicRouter = ({
   component: Component,
@@ -28,13 +28,5 @@ export const PublicRouter = ({
 
   // return <Navigate to="/" replace />;
 
-  return (
-    <Layout
-      sidebar={<Sidebar />}
-      header={<Header />}
-      children={<Component />}
-      footer={<Footer />}
-      page={<Page title={title} />}
-    />
-  );
+  return <Layout header={<Header />} children={<Component />} footer={<Footer />} />;
 };

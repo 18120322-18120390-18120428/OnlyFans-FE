@@ -1,15 +1,17 @@
 import React from 'react';
 import './HeaderFooterLayout.scss';
 
-export const HeaderFooterLayout = ({ sidebar, header, children, footer, page }) => {
+export const HeaderFooterLayout = ({ header, children, footer }) => {
   return (
     <div className="header-footer">
-      <div className="header-layout">{header}</div>
-      <aside className="sidebar-layout">{sidebar}</aside>
-      <div className="children-layout">
-        <div className="page-breadcrumb-layout">{page}</div>
-        <div className="children-content">{children}</div>
-        <footer className="footer-layout">{footer}</footer>
+      <div className="header-footer__container">
+        <div className="header-footer__header">{header}</div>
+        <div className="header-footer__body">
+          <div className="header-footer__content">
+            <div className="header-footer__main">{children}</div>
+            <div className="header-footer__footer">{footer}</div>
+          </div>
+        </div>
       </div>
     </div>
   );

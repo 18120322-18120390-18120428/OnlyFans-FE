@@ -12,21 +12,18 @@ export const Routers = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route
+        <Route
           exact={true}
-          path={"/"}
+          path={'/'}
           element={
-            <PrivateRouter
+            <PublicRouter
               component={Home}
               layout={HeaderFooterLayout}
               header={Header}
               footer={Footer}
-              sidebar={Sidebar}
-              page={PageBreadcrumb}
-              title="Quản lý tài khoản"
             />
           }
-        /> */}
+        />
         <Route
           exact={true}
           path={'/login'}

@@ -1,3 +1,22 @@
 .App {
   height: 100% !important;
 }
+
+.app {
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #aaaaaa;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #eeeeee;
+}
+

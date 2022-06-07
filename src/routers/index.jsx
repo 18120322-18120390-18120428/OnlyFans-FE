@@ -6,7 +6,7 @@ import { PublicRouter } from './PublicRouter';
 import { PrivateRouter } from './PrivateRouter';
 
 import { Header, Footer } from '../components';
-import { CreatePost, Home, Login, PersonalInfo, Register } from '../containers';
+import { Home, Login, PersonalInfo, Register } from '../containers';
 
 export const Routers = () => {
   return (
@@ -41,13 +41,13 @@ export const Routers = () => {
             <PublicRouter component={PersonalInfo} layout={BlankLayout} title="Trang cá nhân" />
           }
         />
-        <Route
+        {/* <Route
           exact={true}
           path={'/create-post'}
           element={
             <PublicRouter component={CreatePost} layout={BlankLayout} title="Tạo bài viết" />
           }
-        />
+        /> */}
       </Routes>
     </BrowserRouter>
   );

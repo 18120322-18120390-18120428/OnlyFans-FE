@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './Home.scss';
 
+import { CreatePost, PostCard } from '../../components';
+
 export const Home = () => {
-  return <div>Body</div>;
+  return (
+    <>
+      <CreatePost />
+      <PostCard />
+      <PostCard />
+    </>
+  );
 };

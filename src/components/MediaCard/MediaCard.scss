@@ -1,0 +1,10 @@
+.media-card {
+  margin: 1px;
+  max-height: 198px;
+  cursor: pointer;
+  &__img {
+    width: 198px;
+    height: 198px;
+    object-fit: cover;
+  }
+}

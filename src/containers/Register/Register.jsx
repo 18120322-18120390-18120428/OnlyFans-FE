@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Login.scss';
+import './Register.scss';
 
 import { Link } from 'react-router-dom';
 import TwitterIcon from '@mui/icons-material/Twitter';
@@ -19,8 +19,9 @@ import {
   IconButton,
 } from '@mui/material';
 
-export const Login = () => {
-  const className = 'login';
+export const Register = () => {
+  const className = 'register';
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -60,9 +61,21 @@ export const Login = () => {
                 }}
               >
                 <Typography component="h1" variant="h5">
-                  Login
+                  Register
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="name"
+                    label="Name"
+                    name="name"
+                    value={name}
+                    autoComplete="name"
+                    autoFocus
+                    onChange={(e) => setName(e.target.value)}
+                  />
                   <TextField
                     margin="normal"
                     required
@@ -103,19 +116,22 @@ export const Login = () => {
                     disabled={email && password ? false : true}
                     sx={{ mt: 2, mb: 2, borderRadius: '1000px' }}
                   >
-                    Login
+                    Register
                   </Button>
-                  <Grid container sx={{ mt: 3, mb: 3 }}>
-                    <Grid item xs>
-                      <Link to="#" variant="body2" className={`${className}__link`}>
-                        Forgot password?
-                      </Link>
-                    </Grid>
-                    <Grid item>
-                      <Link to="#" variant="body2" className={`${className}__link`}>
-                        {' Sign up for OnlyFans '}
-                      </Link>
-                    </Grid>
+                  <Grid>
+                    <div className={`${className}__issues`}>
+                      By signing up you agree to our <br />
+                      <Link to="/"> Terms of Service</Link> and
+                      <Link to=""> Privacy Policy</Link> , and confirm that you are at least 18
+                      years old.
+                    </div>
+                  </Grid>
+                  <Grid className={`${className}__login`}>
+                    <span>
+                      {' '}
+                      Already have an account?
+                      <Link to="/"> Login</Link>
+                    </span>
                   </Grid>
                   <Button
                     variant="contained"

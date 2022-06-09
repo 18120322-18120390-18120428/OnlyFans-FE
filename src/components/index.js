@@ -4,4 +4,4 @@ export * from './DetailInfo/DetailInfo';
 export * from './ConnectWalletModal/ConnectWalletModal';
 export * from './MediaCard/MediaCard';
 export * from './PostCard/PostCard';
-export * from './CreatePost/CreatePost';
+export * from './PostForm/PostForm';

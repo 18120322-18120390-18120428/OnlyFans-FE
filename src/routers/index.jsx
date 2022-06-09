@@ -6,27 +6,24 @@ import { PublicRouter } from './PublicRouter';
 import { PrivateRouter } from './PrivateRouter';
 
 import { Header, Footer } from '../components';
-import { CreatePost, Home, Login, PersonalInfo } from '../containers';
+import { Home, Login, PersonalInfo, Register, CreatePost } from '../containers';
 
 export const Routers = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route
+        <Route
           exact={true}
-          path={"/"}
+          path={'/'}
           element={
-            <PrivateRouter
+            <PublicRouter
               component={Home}
               layout={HeaderFooterLayout}
               header={Header}
               footer={Footer}
-              sidebar={Sidebar}
-              page={PageBreadcrumb}
-              title="Quản lý tài khoản"
             />
           }
-        /> */}
+        />
         <Route
           exact={true}
           path={'/login'}
@@ -34,16 +31,33 @@ export const Routers = () => {
         />
         <Route
           exact={true}
+          path={'/register'}
+          element={<PublicRouter component={Register} layout={BlankLayout} />}
+        />
+        <Route
+          exact={true}
           path={'/info'}
           element={
-            <PublicRouter component={PersonalInfo} layout={BlankLayout} title="Trang cá nhân" />
+            <PublicRouter
+              component={PersonalInfo}
+              layout={HeaderFooterLayout}
+              header={Header}
+              footer={Footer}
+              title="Trang cá nhân"
+            />
           }
         />
         <Route
           exact={true}
           path={'/create-post'}
           element={
-            <PublicRouter component={CreatePost} layout={BlankLayout} title="Tạo bài viết" />
+            <PublicRouter
+              component={CreatePost}
+              layout={HeaderFooterLayout}
+              header={Header}
+              footer={Footer}
+              title="Tạo bài viết"
+            />
           }
         />
       </Routes>

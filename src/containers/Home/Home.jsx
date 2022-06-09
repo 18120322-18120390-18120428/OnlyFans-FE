@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './Home.scss';
 
-import { CreatePost, PostCard } from '../../components';
+import { PostForm, PostCard } from '../../components';
 
 export const Home = () => {
   return (
     <>
-      <CreatePost />
+      <PostForm />
       <PostCard />
       <PostCard />
     </>

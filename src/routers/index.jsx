@@ -6,7 +6,7 @@ import { PublicRouter } from './PublicRouter';
 import { PrivateRouter } from './PrivateRouter';
 
 import { Header, Footer } from '../components';
-import { Home, Login, PersonalInfo, Register } from '../containers';
+import { Home, Login, PersonalInfo, Register, CreatePost } from '../containers';
 
 export const Routers = () => {
   return (
@@ -38,16 +38,28 @@ export const Routers = () => {
           exact={true}
           path={'/info'}
           element={
-            <PublicRouter component={PersonalInfo} layout={BlankLayout} title="Trang cá nhân" />
+            <PublicRouter
+              component={PersonalInfo}
+              layout={HeaderFooterLayout}
+              header={Header}
+              footer={Footer}
+              title="Trang cá nhân"
+            />
           }
         />
-        {/* <Route
+        <Route
           exact={true}
           path={'/create-post'}
           element={
-            <PublicRouter component={CreatePost} layout={BlankLayout} title="Tạo bài viết" />
+            <PublicRouter
+              component={CreatePost}
+              layout={HeaderFooterLayout}
+              header={Header}
+              footer={Footer}
+              title="Tạo bài viết"
+            />
           }
-        /> */}
+        />
       </Routes>
     </BrowserRouter>
   );

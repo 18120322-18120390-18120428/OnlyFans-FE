@@ -1,0 +1,60 @@
+.connect-wallet-modal {
+  height: 80px;
+  display: block;
+  width: 344px;
+  &__img {
+    height: 80px;
+    width: 100%;
+    object-fit: cover;
+  }
+  &__container {
+    margin-top: -32px;
+    padding-left: 16px;
+    padding-right: 16px;
+    width: 344px;
+    box-sizing: border-box;
+  }
+  &__username {
+    font-size: 19px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    &__icon {
+      height: 19px !important;
+      width: 19px !important;
+      margin-left: 1px;
+    }
+  }
+  &__title {
+    color: #8a96a3;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  &__content {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 15px;
+    &__icon {
+      color: #00aff0;
+      margin-right: 8px;
+    }
+  }
+  &__connect {
+    width: 100%;
+    border: 1px solid #ccc;
+    color: #00aff0;
+    border-radius: 1000px;
+    height: 48px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+  &__close {
+    font-weight: 600;
+    color: #00aff0;
+    font-size: 13px;
+    border-radius: 1000px;
+  }
+}

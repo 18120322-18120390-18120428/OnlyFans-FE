@@ -19,21 +19,41 @@ import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutline
 import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
-
-export const PostCard = () => {
+import { toast } from 'react-toastify';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+export const PostCard = ({ postId, content, images }) => {
   const [isLock, setIsLock] = useState(true);
   const [isSubscriber, setIsSubscriber] = useState(true);
-  const images = [
-    'https://scontent.fhan3-2.fna.fbcdn.net/v/t1.6435-9/49581087_2207478666180288_9189463682369716224_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=kGy40evfGnMAX8_uYda&_nc_ht=scontent.fhan3-2.fna&oh=00_AT_UqwmTpbFO4tYM6w2IlSO8RKPjkfFKA0T8N3_WsV7LOA&oe=62C0CF33',
-    'https://scontent.fhan4-2.fna.fbcdn.net/v/t39.30808-6/285669166_185234820513123_5815671142913476595_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=2AwsRehY1yQAX_h2kyu&tn=aEF5ZtUrwg0SyLX3&_nc_ht=scontent.fhan4-2.fna&oh=00_AT9VGzz1Pvi5_ZPgVJuG0djRB-imL8-YMvNrArPbA9QFbQ&oe=629FE7D6',
-    'https://scontent.fhan3-2.fna.fbcdn.net/v/t39.30808-6/285008274_184383317264940_612484162906972251_n.jpg?stp=dst-jpg_p640x640&_nc_cat=107&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=CTNYLf2l4csAX9gdHkb&_nc_ht=scontent.fhan3-2.fna&oh=00_AT-eiMNqkh0kg-Ujld7hweBEj_BLsQ5Z_4YF7tbZp2WjzA&oe=629FA2F5',
-    'https://scontent.fhan3-3.fna.fbcdn.net/v/t39.30808-6/284590897_184245943945344_3872330028188676395_n.jpg?stp=dst-jpg_p843x403&_nc_cat=108&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=_HLnlA0Pt_MAX9EZOaH&_nc_ht=scontent.fhan3-3.fna&oh=00_AT_Tb-WrAawnY4wV54Y9BCYF9nCw4UHry4Hyrd8avb_xXA&oe=629F1A8A',
-    'https://linkvaobong88ag.club/wp-content/uploads/2022/01/tran-huyen-chau-2.jpg',
-    'https://scontent.fhan3-3.fna.fbcdn.net/v/t39.30808-6/280451238_1171219027059744_5143723418706135295_n.jpg?stp=dst-jpg_p843x403&_nc_cat=108&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=dFPylxJNGLkAX9yHL9t&_nc_ht=scontent.fhan3-3.fna&oh=00_AT8IjOcBAO4J6NqYcL_KSq6Hc4GTtHG0uNdif81UTweOzw&oe=629F8326',
-  ];
-  useEffect(() => {});
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const onClickCopyLinkToPost = () => {
+    navigator.clipboard.writeText(postId);
+    toast.success(`Link to profile was copied to clipboard!`, {
+      position: 'bottom-left',
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
   return (
-    <Card sx={{ width: '100%' }}>
+    <Card
+      sx={{
+        width: '100%',
+        borderRadius: '0px',
+        borderBottom: '1px solid #ccc',
+        paddingBottom: '10px',
+      }}
+    >
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
@@ -42,9 +62,37 @@ export const PostCard = () => {
         }
         action={
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography sx={{ color: '#8a96a3', fontSize: '14px' }}>Jan 1</Typography>
+            <Typography sx={{ color: '#8a96a3', fontSize: '14px', marginRight: '4px' }}>
+              Jan 1
+            </Typography>
             <IconButton aria-label="settings">
-              <MoreHorizIcon />
+              <span
+                id="basic-button"
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
+              >
+                <MoreHorizIcon />
+              </span>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button',
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    onClickCopyLinkToPost();
+                  }}
+                >
+                  Copy link to post
+                </MenuItem>
+              </Menu>
             </IconButton>
           </Box>
         }
@@ -58,10 +106,11 @@ export const PostCard = () => {
       />
       <CardContent>
         <Typography variant="body2" sx={{ color: '#000', fontSize: '15px' }}>
-          happy new year !!! so happy i found this platform in 2021 & all of you. very thankful for
+          {/* happy new year !!! so happy i found this platform in 2021 & all of you. very thankful for
           everyone who supports me and uplifts me daily! wishing you all a fun new years eve & all
           the best in 2022. 🤍🪴 focusing on growth & new beginnings full of love. can’t wait to see
-          what the new year brings us all !! xoxo
+          what the new year brings us all !! xoxo */}
+          {content}
         </Typography>
       </CardContent>
       {/* <CardMedia

@@ -8,136 +8,85 @@ import SortOutlinedIcon from '@mui/icons-material/SortOutlined';
 import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
 import Input from '@mui/material/Input';
 import ClearIcon from '@mui/icons-material/Clear';
+import CreateIcon from '@mui/icons-material/Create';
 import postApi from '../../services/postAxios';
-export const PostForm = () => {
-  const [content, setContent] = useState('');
-  const [imageList, setImageList] = useState([]);
-  const [selectedFile, setSelectedFile] = useState('');
-  const [index, setIndex] = useState(1);
-  const onSelectFile = (e, i) => {
-    console.log(e.target.files[0]);
-    if (!e.target.files || e.target.files.length === 0) {
-      // setSelectedFile(undefined);
-      return;
-    }
-    // setSelectedFile(e.target.files[0]);
-    const objectUrl = URL.createObjectURL(e.target.files[0]);
-    const readerImage = new FileReader();
-    readerImage.readAsDataURL(e.target.files[0]);
-    readerImage.onloadend = () => {
-      if (imageList.length > i) {
-        imageList[i].image = String(readerImage.result);
-        imageList[i].preview = objectUrl;
-        setImageList([...imageList]);
-      } else {
-        imageList.push({ order: i, image: String(readerImage.result), preview: objectUrl });
-        setImageList([...imageList]);
-        const temp = index + 1;
-        setIndex(temp);
-      }
-    };
-    return () => URL.revokeObjectURL(objectUrl);
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = {
-      authorId: '121',
-      content: content,
-      images: imageList,
-      fee: 0
-    }
-    const data = await postApi.createPost(formData);
-    console.log(data);
-  };
+export const PostForm = ({
+  content,
+  setContent,
+  imageList,
+  index,
+  setIndex,
+  onSelectFile,
+  handleClearImageWithIndex,
+  handleClearAllImage,
+  handleSubmit,
+}) => {
   return (
     <Box sx={{ maxWidth: '600px' }}>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          position: 'sticky',
-          top: '0',
-          height: '58px',
-          zIndex: '1000',
-          padding: '0 15px',
-          alignItems: 'center',
-          borderBottom: '1px solid #ccc',
-          backgroundColor: '#fff',
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <span>
-            <ArrowBackIcon sx={{ color: '#000' }} />
-          </span>
-          <Box
-            sx={{
-              display: 'flex',
-              color: '#000',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              marginLeft: '15px',
-            }}
-          >
-            <Typography
-              sx={{ fontSize: '19px', fontWeight: '600', display: 'flex', alignItems: 'center' }}
-            >
-              NEW POST
-            </Typography>
-          </Box>
-        </Box>
-        <Box>
-          <Button
-            sx={{
-              border: '1px solid #ccc',
-              borderRadius: '1000px',
-              color: '#00aff0',
-              marginRight: '8px',
-            }}
-            onClick={() => setContent('')}
-          >
-            CLEAR
-          </Button>
-          {content !== '' && content !== undefined ? (
-            <Button
-              sx={{
-                border: '1px solid #00aff0',
-                borderRadius: '1000px',
-                color: '#fff',
-                background: '#00aff0',
-                fontWeight: 600,
-              }}
-              onClick={(e) => {
-                handleSubmit(e);
-              }}
-            >
-              POST
-            </Button>
-          ) : (
-            <button
-              style={{
-                border: '1px solid rgba(138,150,163,.75)',
-                borderRadius: '1000px',
-                color: '#fff',
-                background: 'rgba(138,150,163,.75)',
-                padding: '10px 13px',
-                fontWeight: 600,
-                fontSize: '14px'
-              }}
-            >
-              POST
-            </button>
-          )}
-        </Box>
-      </Box>
+      
       <Box sx={{ padding: '0 19px', display: 'flex', flexWrap: 'wrap' }}>
-        {imageList.map((item, index) => {
+        {imageList && imageList.map((item, i) => {
           return (
-            <div key={index} style={{ margin: '5px', border: '1px solid #ccc' }}>
+            <div key={i} style={{ margin: '5px', border: '1px solid #ccc' }}>
               <div style={{ position: 'relative', maxHeight: '100px' }}>
-                <button style={{ position: 'absolute', top: 0, left: 0 }}>Edit</button>
-                <button style={{ position: 'absolute', top: 0, right: 0 }}>
-                  <ClearIcon />
-                </button>
+                <Button
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    minWidth: '15px',
+                    textTransform: 'capitalize',
+                    color: '#000',
+                    lineHeight: '1.1',
+                    marginLeft: '3px',
+                    marginTop: '4px',
+                    padding: '6px 4px',
+                    fontSize: '13px',
+                    backgroundColor: '#fff',
+                    '&:hover': {
+                      backgroundColor: '#ccc',
+                      opacity: 0.7,
+                    },
+                  }}
+                >
+                  <input
+                    type="file"
+                    onChange={(event) => onSelectFile(event, i)}
+                    id="image"
+                    name="image"
+                    accept=".jpg,.png"
+                    style={{
+                      opacity: 0,
+                      position: 'absolute',
+                      minHeight: '20px',
+                      maxWidth: '40px',
+                    }}
+                    // required={item.type == 'Ảnh bìa'}
+                  />
+                  <CreateIcon
+                    sx={{ color: '#000', width: '14px', height: '14px', marginRight: '3px' }}
+                  />
+                  Edit
+                </Button>
+                <Button
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    minWidth: '10px',
+                    borderRadius: '1000px',
+                    marginTop: '4px',
+                    marginRight: '3px',
+                    backgroundColor: '#fff',
+                    '&:hover': {
+                      backgroundColor: '#ccc',
+                      opacity: 0.7,
+                    },
+                  }}
+                  onClick={() => handleClearImageWithIndex(i + 1)}
+                >
+                  <ClearIcon sx={{ color: '#000', width: '15px', height: '15px' }} />
+                </Button>
                 {item.preview && (
                   <img
                     src={item.preview}
@@ -210,13 +159,19 @@ export const PostForm = () => {
             }}
             // required={item.type == 'Ảnh bìa'}
           />
-          <ImageOutlinedIcon sx={{ color: '#8a96a3', width: '24px', height: '24px' }} />
+          <ImageOutlinedIcon
+            sx={{ color: '#8a96a3', width: '24px', height: '24px', margin: '0 2px' }}
+          />
         </Button>
         <Button sx={{ minWidth: '30px' }}>
-          <SortOutlinedIcon sx={{ color: '#8a96a3', width: '24px', height: '24px' }} />
+          <SortOutlinedIcon
+            sx={{ color: '#8a96a3', width: '24px', height: '24px', margin: '0 2px' }}
+          />
         </Button>
         <Button sx={{ minWidth: '30px' }}>
-          <QuizOutlinedIcon sx={{ color: '#8a96a3', width: '24px', height: '24px' }} />
+          <QuizOutlinedIcon
+            sx={{ color: '#8a96a3', width: '24px', height: '24px', margin: '0 2px' }}
+          />
         </Button>
       </Box>
     </Box>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Header.scss';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Sidebar } from '../Sidebar/Sidebar';
 
 import { AiOutlineHome } from 'react-icons/ai';
@@ -16,6 +16,10 @@ import AddIcon from '@mui/icons-material/Add';
 export const Header = () => {
   const className = 'header';
   const [active, setActive] = useState(0);
+  const history = useNavigate();
+  // const onClickCreateNewPost = () => {
+  //   history.push('/create-post');
+  // };
   const listItems = [
     {
       title: 'Home',
@@ -82,14 +86,29 @@ export const Header = () => {
           </Link>
         );
       })}
-      <Button
+      <Link to={'/create-post'}
+        className={`${className}__item `}
+        style={{
+          backgroundColor: '#00aff0',
+          color: '#fff',
+          borderRadius: '1000px',
+          cursor: 'pointer',
+        }}
+        
+      >
+        <span className={`${className}__icon`}>
+          <AddIcon />
+        </span>
+        <span className={`${className}__text`}>New Post</span>
+      </Link>
+      {/* <Button
         variant="contained"
         fullWidth
         startIcon={<AddIcon />}
         sx={{ borderRadius: '1000px', mt: 1, height: '48px' }}
       >
         New Post
-      </Button>
+      </Button> */}
     </nav>
   );
 };

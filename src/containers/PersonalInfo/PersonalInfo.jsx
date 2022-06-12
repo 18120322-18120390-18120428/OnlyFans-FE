@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DetailInfo, MediaCard, PostCard, Subscribe } from '../../components';
 import './PersonalInfo.scss';
 import PropTypes from 'prop-types';
@@ -11,6 +11,7 @@ import { Button } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
 import CircleIcon from '@mui/icons-material/Circle';
+import postApi from '../../services/postAxios';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -45,12 +46,26 @@ function a11yProps(index) {
 }
 
 export const PersonalInfo = () => {
-  const [value, setValue] = React.useState(0);
-
+  const [value, setValue] = useState(0);
+  const [posts, setPosts] = useState([]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  useEffect(() => {});
+  useEffect(() => {
+    getPostByAuthorId();
+  }, []);
+  const getPostByAuthorId = async () => {
+    const data = await postApi.getPostByAuthorId('121');
+    console.log(data, process.env.PATH_CLOUDINARY);
+    data.data.map((item, index) => {
+      let temp = item;
+      temp.images = [];
+      console.log(temp);
+      item.image.map((item) => temp.images.push(`https://res.cloudinary.com/ndh/image/upload/v1639223470/${item.url}`));
+      posts.push(temp);
+    });
+    setPosts([...posts]);
+  };
   const images = [
     '',
     'https://scontent.fhan3-2.fna.fbcdn.net/v/t1.6435-9/49581087_2207478666180288_9189463682369716224_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=kGy40evfGnMAX8_uYda&_nc_ht=scontent.fhan3-2.fna&oh=00_AT_UqwmTpbFO4tYM6w2IlSO8RKPjkfFKA0T8N3_WsV7LOA&oe=62C0CF33',
@@ -123,7 +138,10 @@ export const PersonalInfo = () => {
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
-          <PostCard />
+          {posts &&
+            posts.map((item, index) => {
+              return <PostCard postId={item._id} content={item.content} images={item.images} />;
+            })}
         </TabPanel>
         <TabPanel value={value} index={1}>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', marginTop: '8px' }}>

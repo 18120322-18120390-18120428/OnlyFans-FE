@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import userApi from '../../services/userApi';
+import userApi from '../../services/userAxios';
 
 export const login = createAsyncThunk('user/login', async (params) => {
   return await userApi.login(params).then((res) => res.data);
@@ -27,9 +27,10 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state, action) => {
-      if (action.payload.data) {
+      if (action.payload) {
         state.isAccount = true;
-        localStorage.setItem('jwt', action.payload.data);
+        localStorage.setItem('jwt', action.payload.accessToken);
+        state.account = action.payload.user;
       } else {
         state.isAccount = false;
         state.account = {};

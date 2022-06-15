@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Login.scss';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import GoogleIcon from '@mui/icons-material/Google';
@@ -18,23 +18,54 @@ import {
   InputAdornment,
   IconButton,
 } from '@mui/material';
-
+import userApi from '../../services/userAxios';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { login, userSlice } from '../../redux/slice/userSlice';
 export const Login = () => {
   const className = 'login';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const handleSubmit = async(event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const values = {
+      email: email,
+      password: password,
+    };
+    try {
+      const test = (await dispatch(login(values))).payload; 
+      console.log(test);
+      const res = await userApi.login(values);
+      console.log(res);
+      if (res) {
+        toast.success('Login success', {
+          position: 'top-right',
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        navigate('/');
+        return;
+      }
+    } catch (error) {
+      toast.error('Username or password is incorrect !', {
+        position: 'top-right',
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
   };
-
-  console.log(email, password);
 
   return (
     <div className={className}>

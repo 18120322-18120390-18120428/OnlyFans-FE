@@ -16,7 +16,7 @@ export const Routers = () => {
           exact={true}
           path={'/'}
           element={
-            <PublicRouter
+            <PrivateRouter
               component={Home}
               layout={HeaderFooterLayout}
               header={Header}
@@ -36,14 +36,13 @@ export const Routers = () => {
         />
         <Route
           exact={true}
-          path={'/info'}
+          path={'/:id'}
           element={
-            <PublicRouter
+            <PrivateRouter
               component={PersonalInfo}
               layout={HeaderFooterLayout}
               header={Header}
               footer={Footer}
-              title="Trang cá nhân"
             />
           }
         />
@@ -51,12 +50,11 @@ export const Routers = () => {
           exact={true}
           path={'/create-post'}
           element={
-            <PublicRouter
+            <PrivateRouter
               component={CreatePost}
               layout={HeaderFooterLayout}
               header={Header}
               footer={Footer}
-              title="Tạo bài viết"
             />
           }
         />

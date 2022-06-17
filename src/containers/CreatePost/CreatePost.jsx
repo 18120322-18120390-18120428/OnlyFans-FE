@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+
+import { Button, Box, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Button } from '@mui/material';
-import postApi from '../../services/postAxios';
-import { PostForm } from '../../components';
+
 import { Link, useNavigate } from 'react-router-dom';
+import { PostForm } from '../../components';
+import postApi from '../../services/postAxios';
+import { useSelector } from 'react-redux';
 
 export const CreatePost = () => {
   const history = useNavigate();
   const [content, setContent] = useState('');
   const [imageList, setImageList] = useState([]);
   const [index, setIndex] = useState(1);
+  const account = useSelector((state) => state.userSlice.account);
+
   const onSelectFile = (e, i) => {
     const objectUrl = URL.createObjectURL(e.target.files[0]);
     const readerImage = new FileReader();
@@ -28,8 +31,10 @@ export const CreatePost = () => {
         setIndex(temp);
       }
     };
+
     return () => URL.revokeObjectURL(objectUrl);
   };
+
   const handleClearImageWithIndex = (i) => {
     const images = [];
     imageList.map((item) => {
@@ -40,33 +45,40 @@ export const CreatePost = () => {
       // eslint-disable-next-line array-callback-return
       return;
     });
+
     setImageList([...images]);
+
     const temp = index - 1;
     setIndex(temp);
   };
+
   const handleClearAllImage = () => {
     setImageList([]);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = {
-      authorId: '121',
+      authorId: account._id,
       content: content,
       images: imageList,
       fee: 0,
     };
+
     const data = await postApi.createPost(formData);
     console.log(data);
   };
-  const onClickBack = () => {
-    if (history.action === 'PUSH') {
-      history.goBack();
-    } else {
-      history.push({
-        pathname: `/`,
-      });
-    }
-  };
+
+  // const onClickBack = () => {
+  //   if (history.action === 'PUSH') {
+  //     history.goBack();
+  //   } else {
+  //     history.push({
+  //       pathname: `/`,
+  //     });
+  //   }
+  // };
+
   return (
     <Box
       sx={{ maxWidth: '600px', borderRight: '1px solid rgba(138,150,163,.25)', minHeight: '100%' }}

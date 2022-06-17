@@ -27,10 +27,12 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state, action) => {
-      if (action.payload) {
+      const data = action.payload;
+
+      if (data) {
         state.isAccount = true;
-        localStorage.setItem('jwt', action.payload.accessToken);
-        state.account = action.payload.user;
+        localStorage.setItem('jwt', data.accessToken);
+        state.account = data.user;
       } else {
         state.isAccount = false;
         state.account = {};
@@ -38,8 +40,10 @@ export const userSlice = createSlice({
       }
     });
     builder.addCase(getInfo.fulfilled, (state, action) => {
-      if (action.payload.data) {
-        state.account = action.payload.data;
+      const data = action.payload;
+
+      if (data.user) {
+        state.account = data.user;
         state.isAccount = true;
       } else {
         state.account = {};

@@ -18,29 +18,33 @@ import {
   InputAdornment,
   IconButton,
 } from '@mui/material';
+
 import userApi from '../../services/userAxios';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
-import { login, userSlice } from '../../redux/slice/userSlice';
+import { login } from '../../redux/slice/userSlice';
+
 export const Login = () => {
   const className = 'login';
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const handleSubmit = async(event) => {
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
     const values = {
       email: email,
       password: password,
     };
+
     try {
-      const test = (await dispatch(login(values))).payload; 
-      console.log(test);
-      const res = await userApi.login(values);
-      console.log(res);
-      if (res) {
+      const loginData = (await dispatch(login(values))).payload;
+
+      if (loginData.accessToken) {
         toast.success('Login success', {
           position: 'top-right',
           autoClose: 4000,
@@ -143,7 +147,7 @@ export const Login = () => {
                       </Link>
                     </Grid>
                     <Grid item>
-                      <Link to="#" variant="body2" className={`${className}__link`}>
+                      <Link to="/register" variant="body2" className={`${className}__link`}>
                         {' Sign up for OnlyFans '}
                       </Link>
                     </Grid>

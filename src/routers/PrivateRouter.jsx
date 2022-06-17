@@ -1,62 +1,53 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
-import { getInfo } from "../redux/slice/userSlice";
-import { useNavigate } from "react-router-dom";
-import { CircularProgress } from "@mui/material";
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { getInfo } from '../redux/slice/userSlice';
+import { useNavigate } from 'react-router-dom';
+import { CircularProgress } from '@mui/material';
 
 export const PrivateRouter = ({
   component: Component,
   layout: Layout,
   header: Header,
   footer: Footer,
-  sidebar: Sidebar,
-  page: Page,
-  title,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation().pathname;
-  const [isFetch, setIsFectch] = useState(false);
+  const [isFetch, setIsFetch] = useState(false);
   const isAccount = useSelector((state) => state.userSlice.isAccount);
-  const fecthInfo = async () => {
-    const check = (await dispatch(getInfo())).payload;
-
-    if (
-      check === true ||
-      check === false ||
-      String(typeof check) === "object" ||
-      check === undefined
-    ) {
-      setIsFectch(true);
-    }
-  };
 
   useEffect(() => {
-    fecthInfo();
-    return;
+    const fetchInfo = async () => {
+      const check = (await dispatch(getInfo())).payload;
+
+      if (
+        check === true ||
+        check === false ||
+        String(typeof check) === 'object' ||
+        check === undefined
+      ) {
+        setIsFetch(true);
+      }
+
+      return;
+    };
+
+    fetchInfo();
   }, [location]);
 
-  const render = () => {
-    if (isAccount === false) {
-      return navigate("/login");
+  const renderLayout = () => {
+    if (!isFetch) {
+      return <CircularProgress color="secondary" />;
     }
 
-    return isFetch === false ? (
-      <CircularProgress color="secondary" />
-    ) : isAccount ? (
-      <Layout
-        sidebar={<Sidebar />}
-        header={<Header />}
-        children={<Component />}
-        footer={<Footer />}
-        page={<Page title={title} />}
-      />
-    ) : (
-      navigate("/")
-    );
+    if (!isAccount) {
+      navigate('/login');
+    }
+
+    return <Layout header={<Header />} children={<Component />} footer={<Footer />} />;
   };
 
-  return render();
+  return renderLayout();
 };

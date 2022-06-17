@@ -3,7 +3,11 @@ import basicAxios from './basicAxios';
 const userApi = {
   getInfo: async () => {
     const url = `user/get-info`;
-    return await basicAxios.get(url);
+    return await basicAxios.get(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+      },
+    });
   },
   login: async (requestOption) => {
     const url = `user/login`;

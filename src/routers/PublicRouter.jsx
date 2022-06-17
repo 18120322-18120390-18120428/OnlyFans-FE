@@ -1,32 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { getInfo } from '../redux/slice/userSlice';
+import { useNavigate } from 'react-router-dom';
+import { CircularProgress } from '@mui/material';
 
 export const PublicRouter = ({
   component: Component,
   layout: Layout,
   header: Header,
   footer: Footer,
-  sidebar: Sidebar,
-  page: Page,
-  title,
 }) => {
-  // const isAccount = useSelector((state) => state.userSlice.isAccount);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation().pathname;
+  const [isFetch, setIsFectch] = useState(false);
+  const isAccount = useSelector((state) => state.userSlice.isAccount);
 
-  // if (!isAccount) {
-  //   return (
-  //     <Layout
-  //       sidebar={<Sidebar />}
-  //       header={<Header />}
-  //       children={<Component />}
-  //       footer={<Footer />}
-  //       page={<Page title={title} />}
-  //     />
-  //   );
-  // }
+  useEffect(() => {
+    const fecthInfo = async () => {
+      const check = (await dispatch(getInfo())).payload;
 
-  // return <Navigate to="/" replace />;
+      if (
+        check === true ||
+        check === false ||
+        String(typeof check) === 'object' ||
+        check === undefined
+      ) {
+        setIsFectch(true);
+      }
+    };
 
-  return <Layout header={<Header />} children={<Component />} footer={<Footer />} />;
+    fecthInfo();
+  }, [location]);
+
+  const renderLayout = () => {
+    if (!isFetch) {
+      return <CircularProgress color="secondary" />;
+    }
+
+    if (isAccount) {
+      navigate('/');
+    }
+
+    return <Layout header={<Header />} children={<Component />} footer={<Footer />} />;
+  };
+
+  return renderLayout();
 };

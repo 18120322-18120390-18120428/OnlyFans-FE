@@ -21,13 +21,15 @@ import {
 } from '@mui/material';
 import { Formik, useFormik } from 'formik';
 import * as Yup from 'yup';
-import { toast } from 'react-toastify';
 
+import { toast } from 'react-toastify';
 import userApi from '../../services/userAxios';
+
 export const Register = () => {
   const className = 'register';
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
   const validationSchema = Yup.object({
     email: Yup.string().email('Địa chỉ email không hợp lệ').required('Vui lòng nhập email'),
     name: Yup.string()
@@ -41,6 +43,7 @@ export const Register = () => {
         'The password must contain at least 1 number, at least 1 lower case latin letter, and at least 1 upper case latin letter',
       ),
   });
+
   const handleNotice = (error) => {
     if (error.message === 'Register user by email failed: Email đã tồn tại') {
       toast.error('Email đăng ký đã tồn tại', {
@@ -54,6 +57,7 @@ export const Register = () => {
       });
       return;
     }
+
     toast.error('Email đăng ký đã tồn tại', {
       position: 'top-right',
       autoClose: 4000,
@@ -76,9 +80,10 @@ export const Register = () => {
       progress: undefined,
     });
     console.log(values);
+
     try {
       const res = await userApi.register(values);
-      console.log(res);
+      console.log('res: ', res);
       if (res) {
         toast.success('Đăng ký tài khoản thành công', {
           position: 'top-right',
@@ -223,8 +228,8 @@ export const Register = () => {
                       <Grid>
                         <div className={`${className}__issues`}>
                           By signing up you agree to our <br />
-                          <Link to="/"> Terms of Service</Link> and
-                          <Link to=""> Privacy Policy</Link> , and confirm that you are at least 18
+                          <Link to="#"> Terms of Service</Link> and
+                          <Link to="#"> Privacy Policy</Link> , and confirm that you are at least 18
                           years old.
                         </div>
                       </Grid>

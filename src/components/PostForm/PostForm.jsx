@@ -134,10 +134,6 @@ export const PostForm = ({
             outline: ' none',
             fontSize: '14px',
             boxSizing: 'border-box',
-            '::-webkit-scrollbar': {
-              width: '6px',
-              height: '6px',
-            },
           }}
           value={content}
           placeholder="Compose new post..."

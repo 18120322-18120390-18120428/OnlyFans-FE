@@ -1,27 +1,28 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+import { Button, Box, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Button } from '@mui/material';
-import postApi from '../../services/postAxios';
-import { PostForm } from '../../components';
 import { Link, useNavigate } from 'react-router-dom';
 import detectEthereumProvider from '@metamask/detect-provider';
 import Web3 from 'web3';
 import { loadContract } from '../../utils/load-contract';
 import { toast } from 'react-toastify';
+import { PostForm } from '../../components';
+import postApi from '../../services/postAxios';
+import { useSelector } from 'react-redux';
+
 export const CreatePost = () => {
   const history = useNavigate();
   const [content, setContent] = useState('');
   const [imageList, setImageList] = useState([]);
   const [index, setIndex] = useState(1);
+  const account = useSelector((state) => state.userSlice.account);
   const [web3Api, setWeb3Api] = useState({
     provider: null,
     web3: null,
     contract: null,
   });
   const [accountList, setAccountList] = useState([]);
-  const [account, setAccount] = useState(null);
+  const [accountTest, setAccount] = useState(null);
   const [balance, setBalance] = useState(null);
 
   const [shouldReload, reload] = useState(false);
@@ -58,6 +59,8 @@ export const CreatePost = () => {
     web3Api.web3 && getAccount();
   }, [web3Api.web3]);
 
+
+
   const onSelectFile = (e, i) => {
     const objectUrl = URL.createObjectURL(e.target.files[0]);
     const readerImage = new FileReader();
@@ -74,8 +77,10 @@ export const CreatePost = () => {
         setIndex(temp);
       }
     };
+
     return () => URL.revokeObjectURL(objectUrl);
   };
+
   const handleClearImageWithIndex = (i) => {
     const images = [];
     imageList.map((item) => {
@@ -86,13 +91,17 @@ export const CreatePost = () => {
       // eslint-disable-next-line array-callback-return
       return;
     });
+
     setImageList([...images]);
+
     const temp = index - 1;
     setIndex(temp);
   };
+
   const handleClearAllImage = () => {
     setImageList([]);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (account) {
@@ -139,6 +148,7 @@ export const CreatePost = () => {
       });
     }
   };
+
 
   return (
     <Box

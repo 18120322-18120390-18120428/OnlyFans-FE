@@ -65,7 +65,7 @@ export const PostCard = ({ postId, content, images }) => {
             <Typography sx={{ color: '#8a96a3', fontSize: '14px', marginRight: '4px' }}>
               Jan 1
             </Typography>
-            <IconButton aria-label="settings">
+            <IconButton aria-label="settings" sx={{minWidth: '45px'}}>
               <span
                 id="basic-button"
                 aria-controls={open ? 'basic-menu' : undefined}

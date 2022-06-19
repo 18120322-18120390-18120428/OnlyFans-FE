@@ -10,7 +10,7 @@ import Grid from '@mui/material/Grid';
 import CheckIcon from '@mui/icons-material/Check';
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
 export const ConnectWalletModal = (props) => {
-  const { onClose, selectedValue, open } = props;
+  const { onClose, selectedValue, open, connectWallet } = props;
 
   const handleClose = () => {
     onClose(selectedValue);
@@ -19,7 +19,10 @@ export const ConnectWalletModal = (props) => {
   const handleListItemClick = (value) => {
     onClose(value);
   };
-
+  const handleClickAddWalletAddress = () => {
+    onClose();
+    connectWallet();
+  };
   return (
     <Dialog onClose={handleClose} open={open}>
       <Box
@@ -98,8 +101,9 @@ export const ConnectWalletModal = (props) => {
                 fontWeight: 600,
                 marginBottom: '15px',
               }}
+              onClick={handleClickAddWalletAddress}
             >
-              Please add a payment card
+              Please add a wallet address
             </Button>
           </Box>
         </Grid>

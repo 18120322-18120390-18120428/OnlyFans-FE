@@ -35,7 +35,7 @@ export const PrivateRouter = ({
     };
 
     fetchInfo();
-  }, [location]);
+  }, [location, dispatch]);
 
   const renderLayout = () => {
     if (!isFetch) {

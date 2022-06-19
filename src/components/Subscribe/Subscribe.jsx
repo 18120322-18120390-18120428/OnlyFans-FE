@@ -5,10 +5,13 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ConnectWalletModal } from '../ConnectWalletModal/ConnectWalletModal';
+import WalletContext from '../../contexts/WalletContext';
+import { useContext } from 'react';
+
 export const Subscribe = () => {
   const [open, setOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState(0);
-
+  const wallet = useContext(WalletContext);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -17,6 +20,14 @@ export const Subscribe = () => {
     setOpen(false);
     setSelectedValue(value);
   };
+  const handleSubscribe = () =>{
+    console.log(wallet);
+    if(wallet.account){
+      wallet.addFunds();
+    }else{
+      handleClickOpen();
+    }
+  }
   return (
     <>
       <Box sx={{ backgroundColor: '#fff', padding: '0 16px' }}>
@@ -26,7 +37,7 @@ export const Subscribe = () => {
           SUBCRIPTION
         </Typography>
         <Button
-          onClick={handleClickOpen}
+          onClick={handleSubscribe}
           sx={{
             width: '100%',
             backgroundColor: '#00aff0',
@@ -69,7 +80,7 @@ export const Subscribe = () => {
           </AccordionSummary>
           <AccordionDetails sx={{ padding: '0 0 ' }}>
             <Button
-              onClick={handleClickOpen}
+              onClick={handleSubscribe}
               sx={{
                 width: '100%',
                 backgroundColor: '#00aff0',
@@ -104,7 +115,7 @@ export const Subscribe = () => {
               </Box>
             </Button>
             <Button
-              onClick={handleClickOpen}
+              onClick={handleSubscribe}
               sx={{
                 width: '100%',
                 backgroundColor: '#00aff0',

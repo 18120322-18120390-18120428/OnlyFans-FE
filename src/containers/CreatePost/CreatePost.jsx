@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-
+import React, { useEffect, useState, useCallback } from 'react';
 import { Button, Box, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
 import { Link, useNavigate } from 'react-router-dom';
+import detectEthereumProvider from '@metamask/detect-provider';
+import Web3 from 'web3';
+import { loadContract } from '../../utils/load-contract';
+import { toast } from 'react-toastify';
 import { PostForm } from '../../components';
 import postApi from '../../services/postAxios';
 import { useSelector } from 'react-redux';
@@ -14,6 +16,50 @@ export const CreatePost = () => {
   const [imageList, setImageList] = useState([]);
   const [index, setIndex] = useState(1);
   const account = useSelector((state) => state.userSlice.account);
+  const [web3Api, setWeb3Api] = useState({
+    provider: null,
+    web3: null,
+    contract: null,
+  });
+  const [accountList, setAccountList] = useState([]);
+  const [accountTest, setAccount] = useState(null);
+  const [balance, setBalance] = useState(null);
+
+  const [shouldReload, reload] = useState(false);
+  const reloadEffect = () => reload(!shouldReload);
+
+  const setAccountLister = (provider) => {
+    provider.on('accountChanged', (accounts) => setAccount(accounts[0]));
+  };
+  useEffect(() => {
+    const loadProvider = async () => {
+      const provider = await detectEthereumProvider();
+      const contract = await loadContract('Faucet', provider);
+      console.log(contract, provider);
+      //debugger
+
+      if (provider) {
+        setAccountList(provider);
+        setWeb3Api({
+          web3: new Web3(provider),
+          provider,
+          contract,
+        });
+      } else {
+        console.error('please, Install Metamask');
+      }
+    };
+    loadProvider();
+  }, []);
+  useEffect(() => {
+    const getAccount = async () => {
+      const accounts = await web3Api.web3.eth.getAccounts();
+      setAccount(accounts);
+    };
+    web3Api.web3 && getAccount();
+  }, [web3Api.web3]);
+
+
 
   const onSelectFile = (e, i) => {
     const objectUrl = URL.createObjectURL(e.target.files[0]);
@@ -58,26 +104,51 @@ export const CreatePost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = {
-      authorId: account._id,
-      content: content,
-      images: imageList,
-      fee: 0,
-    };
+    if (account) {
+      const formData = {
+        authorId: '121',
+        content: content,
+        images: imageList,
+        fee: 0,
+      };
+      const data = await postApi.createPost(formData);
+      console.log(data);
+    } else {
+      web3Api.provider
+        .request({ method: 'eth_requestAccounts' })
+        .then((accounts) => {
+          console.log(accounts);
+          setAccount(accounts);
+        })
+        .catch((error) => {
+          if (error.message === 'Already processing eth_requestAccounts. Please wait.') {
+            toast.warning(`Please connect Metamask before create new post`, {
+              position: 'bottom-left',
+              autoClose: 4000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          } else {
+            console.error(error);
+          }
+        });
+    }
 
-    const data = await postApi.createPost(formData);
-    console.log(data);
+    return;
+  };
+  const onClickBack = () => {
+    if (history.action === 'PUSH') {
+      history.goBack();
+    } else {
+      history.push({
+        pathname: `/`,
+      });
+    }
   };
 
-  // const onClickBack = () => {
-  //   if (history.action === 'PUSH') {
-  //     history.goBack();
-  //   } else {
-  //     history.push({
-  //       pathname: `/`,
-  //     });
-  //   }
-  // };
 
   return (
     <Box
@@ -155,9 +226,7 @@ export const CreatePost = () => {
                 background: '#00aff0',
                 fontWeight: 600,
               }}
-              onClick={(e) => {
-                handleSubmit(e);
-              }}
+              onClick={(e) => handleSubmit(e)}
             >
               POST
             </Button>

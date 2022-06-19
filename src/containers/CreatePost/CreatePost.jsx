@@ -106,7 +106,7 @@ export const CreatePost = () => {
     e.preventDefault();
     if (account) {
       const formData = {
-        authorId: '121',
+        authorId: account._id,
         content: content,
         images: imageList,
         fee: 0,

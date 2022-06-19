@@ -3,6 +3,8 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import Web3 from 'web3';
 import { loadContract } from "../utils/load-contract";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import walletApi from "../services/walletAxios";
 const WalletContext = React.createContext();
 
 export default WalletContext;
@@ -15,6 +17,7 @@ export const WalletProvider = ({ children }) => {
     const [accountList, setAccountList] = useState([]);
     const [account, setAccount] = useState(null);
     const [balance, setBalance] = useState(null);
+    const user = useSelector((state) => state.userSlice.account);
 
     const setAccountLister = (provider) => {
         provider.on("accountChanged", accounts => setAccount(accounts[0]))
@@ -74,16 +77,22 @@ export const WalletProvider = ({ children }) => {
             from: account
         })
     }
+    const addNewWalletAddress = async (holderId, walletAddress) => {
+        const res = await walletApi.addWalletAddress({ holderId: holderId, walletAddress: walletAddress });
+        return res
+    }
     const connectWallet = async () => {
         web3Api.provider
             .request({ method: 'eth_requestAccounts' })
             .then((accounts) => {
                 console.log(accounts);
-                setAccount(accounts);
+                setAccount(accounts[0]);
+                const res = addNewWalletAddress(user._id, accounts[0]);
+                console.log(res);
             })
             .catch((error) => {
                 if (error.message === 'Already processing eth_requestAccounts. Please wait.') {
-                    toast.warning(`Please connect Metamask before create new post`, {
+                    toast.warning(`Please connect Metamask before taking action`, {
                         position: 'bottom-left',
                         autoClose: 4000,
                         hideProgressBar: false,

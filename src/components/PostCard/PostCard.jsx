@@ -22,9 +22,8 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 import { toast } from 'react-toastify';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-export const PostCard = ({ postId, content, images }) => {
+export const PostCard = ({ postId, content, images, isSubscriber = false }) => {
   const [isLock, setIsLock] = useState(true);
-  const [isSubscriber, setIsSubscriber] = useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {

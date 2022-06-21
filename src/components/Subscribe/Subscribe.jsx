@@ -7,8 +7,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ConnectWalletModal } from '../ConnectWalletModal/ConnectWalletModal';
 import WalletContext from '../../contexts/WalletContext';
 import { useContext } from 'react';
+import walletApi from '../../services/walletAxios';
 
-export const Subscribe = () => {
+export const Subscribe = ({ subscriberId, idolId }) => {
   const [open, setOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState(0);
   const wallet = useContext(WalletContext);
@@ -20,10 +21,17 @@ export const Subscribe = () => {
     setOpen(false);
     setSelectedValue(value);
   };
-  const handleSubscribe = () => {
+  const handleSubscribe = async () => {
     console.log(wallet);
     if (wallet.account) {
-      wallet.addFunds();
+      try {
+        const receiver = await walletApi.getOneByHolderId(idolId);
+        console.log(receiver);
+        const d = new Date();
+        wallet.addNewSubscribe(receiver.data.wallet.walletAddress, subscriberId, idolId, 1, d.getTime());
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       handleClickOpen();
     }

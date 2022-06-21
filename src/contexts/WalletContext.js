@@ -25,8 +25,8 @@ export const WalletProvider = ({ children }) => {
     useEffect(() => {
         const loadProvider = async () => {
             const provider = await detectEthereumProvider()
-            const contract = await loadContract("Faucet", provider)
-
+            const contract = await loadContract("OnlyFans", provider)
+            console.log(contract);
             // debugger
 
             if (provider) {
@@ -37,6 +37,15 @@ export const WalletProvider = ({ children }) => {
                     contract
                 })
             } else {
+                toast.warning(`Please install Metamask`, {
+                    position: 'bottom-left',
+                    autoClose: 4000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
                 console.error("please, Install Metamask")
             }
         }
@@ -59,27 +68,44 @@ export const WalletProvider = ({ children }) => {
         }
         web3Api.contract && loadBalance()
     }, [web3Api]);
+    const getAccount = async () => {
+        const accounts = await web3Api.web3.eth.getAccounts()
+        return accounts[0];
+    }
+    // const addFunds = useCallback(async (wei = 3) => {
+    //     const { contract, web3 } = web3Api
+    //     await contract.addFunds({
+    //         from: account,
+    //         value: web3.utils.toWei(String(wei), "ether")
+    //     })
 
-    const addFunds = useCallback(async (wei = 3) => {
-        const { contract, web3 } = web3Api
-        await contract.addFunds({
+    // }, [web3Api, account])
+
+
+    // const withdraw = async (wei = 3) => {
+    //     const { contract, web3 } = web3Api
+    //     const withdrawAmount = web3.utils.toWei(String(wei), "ether")
+    //     await contract.withdraw(withdrawAmount, {
+    //         from: account
+    //     })
+    // }
+    const addNewSubscribe = useCallback(async (receiver, subscriberId, idolId, amount = 0, date) => {
+        const { contract, web3 } = web3Api;
+        const wei = web3.utils.toWei(String(amount), "ether");
+        await contract.addNewSubscribe(receiver, subscriberId, idolId, wei, date, {
             from: account,
-            value: web3.utils.toWei(String(wei), "ether")
-        })
+            value: wei
+        });
 
     }, [web3Api, account])
-
-
-    const withdraw = async (wei = 3) => {
-        const { contract, web3 } = web3Api
-        const withdrawAmount = web3.utils.toWei(String(wei), "ether")
-        await contract.withdraw(withdrawAmount, {
-            from: account
-        })
+    const checkSubscribe = async (subscriberId, idolId) => {
+        const { contract } = web3Api;
+        const res = await contract.checkSubscribe(subscriberId, idolId);
+        return res;
     }
     const addNewWalletAddress = async (holderId, walletAddress) => {
         const res = await walletApi.addWalletAddress({ holderId: holderId, walletAddress: walletAddress });
-        return res
+        return res;
     }
     const connectWallet = async () => {
         web3Api.provider
@@ -110,12 +136,13 @@ export const WalletProvider = ({ children }) => {
         <WalletContext.Provider
             value={{
                 web3Api,
-                withdraw,
                 connectWallet,
                 account,
-                addFunds,
                 accountList,
-                balance
+                balance,
+                addNewSubscribe,
+                checkSubscribe,
+                getAccount
             }}>
             {children}
         </WalletContext.Provider>

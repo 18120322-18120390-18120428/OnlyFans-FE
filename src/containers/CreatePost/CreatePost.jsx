@@ -9,58 +9,19 @@ import { toast } from 'react-toastify';
 import { PostForm } from '../../components';
 import postApi from '../../services/postAxios';
 import { useSelector } from 'react-redux';
+import { useContext } from 'react';
+import WalletContext from '../../contexts/WalletContext';
+import walletApi from '../../services/walletAxios';
 
 export const CreatePost = () => {
   const history = useNavigate();
   const [content, setContent] = useState('');
   const [imageList, setImageList] = useState([]);
   const [index, setIndex] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const account = useSelector((state) => state.userSlice.account);
-  const [web3Api, setWeb3Api] = useState({
-    provider: null,
-    web3: null,
-    contract: null,
-  });
-  const [accountList, setAccountList] = useState([]);
-  const [accountTest, setAccount] = useState(null);
-  const [balance, setBalance] = useState(null);
-
-  const [shouldReload, reload] = useState(false);
-  const reloadEffect = () => reload(!shouldReload);
-
-  const setAccountLister = (provider) => {
-    provider.on('accountChanged', (accounts) => setAccount(accounts[0]));
-  };
-  useEffect(() => {
-    const loadProvider = async () => {
-      const provider = await detectEthereumProvider();
-      const contract = await loadContract('Faucet', provider);
-      console.log(contract, provider);
-      //debugger
-
-      if (provider) {
-        setAccountList(provider);
-        setWeb3Api({
-          web3: new Web3(provider),
-          provider,
-          contract,
-        });
-      } else {
-        console.error('please, Install Metamask');
-      }
-    };
-    loadProvider();
-  }, []);
-  useEffect(() => {
-    const getAccount = async () => {
-      const accounts = await web3Api.web3.eth.getAccounts();
-      setAccount(accounts);
-    };
-    web3Api.web3 && getAccount();
-  }, [web3Api.web3]);
-
-
-
+  const wallet = useContext(WalletContext);
+  const navigate = useNavigate();
   const onSelectFile = (e, i) => {
     const objectUrl = URL.createObjectURL(e.target.files[0]);
     const readerImage = new FileReader();
@@ -104,37 +65,45 @@ export const CreatePost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  setIsSubmitting(!isSubmitting);
     if (account) {
-      const formData = {
-        authorId: account._id,
-        content: content,
-        images: imageList,
-        fee: 0,
-      };
-      const data = await postApi.createPost(formData);
-      console.log(data);
-    } else {
-      web3Api.provider
-        .request({ method: 'eth_requestAccounts' })
-        .then((accounts) => {
-          console.log(accounts);
-          setAccount(accounts);
-        })
-        .catch((error) => {
-          if (error.message === 'Already processing eth_requestAccounts. Please wait.') {
-            toast.warning(`Please connect Metamask before create new post`, {
-              position: 'bottom-left',
-              autoClose: 4000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          } else {
-            console.error(error);
-          }
-        });
+      const res = await walletApi.getOneByHolderId(account._id);
+      if (res) {
+        const formData = {
+          authorId: account._id,
+          content: content,
+          images: imageList,
+          fee: 0,
+        };
+        const data = await postApi.createPost(formData);
+        console.log(data);
+        if (data.status === 200) {
+          toast.success(`Create post success`, {
+            position: 'bottom-left',
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          navigate(`/${account._id}`);
+          setIsSubmitting(!isSubmitting);
+        } else {
+          toast.warning(`Create post failed`, {
+            position: 'bottom-left',
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          setIsSubmitting(!isSubmitting);
+        }
+      } else {
+        wallet.connectWallet();
+      }
     }
 
     return;
@@ -148,7 +117,6 @@ export const CreatePost = () => {
       });
     }
   };
-
 
   return (
     <Box
@@ -217,7 +185,7 @@ export const CreatePost = () => {
           >
             CLEAR
           </Button>
-          {content !== '' && content !== undefined ? (
+          {content !== '' && content !== undefined && !isSubmitting ? (
             <Button
               sx={{
                 border: '1px solid #00aff0',

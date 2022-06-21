@@ -5,12 +5,14 @@ import PropTypes from 'prop-types';
 import postApi from '../../services/postAxios';
 import { useParams } from 'react-router-dom';
 import { DetailInfo, MediaCard, PostCard, Subscribe } from '../../components';
-
 import { Tabs, Tab, Typography, Box } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
 import CircleIcon from '@mui/icons-material/Circle';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import WalletContext from '../../contexts/WalletContext';
+import { useContext } from 'react';
+import { useSelector } from 'react-redux';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -49,13 +51,32 @@ export const PersonalInfo = () => {
   const [value, setValue] = useState(0);
   const [posts, setPosts] = useState([]);
   const { id } = useParams();
-
+  const wallet = useContext(WalletContext);
+  const account = useSelector((state) => state.userSlice.account);
+  const [isSubscribe, setIsSubscribe] = useState(false);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   useEffect(() => {
     getPostByAuthorId();
+  }, []);
+
+  useEffect(() => {
+    if (account._id === id) {
+      setIsSubscribe(true);
+    }
+  }, [account._id, isSubscribe]);
+  const checkSubscribe = async (subscriberId, idolId) => {
+    return await wallet.checkSubscribe(subscriberId, idolId);
+  };
+
+  useEffect(() => {
+    console.log(wallet);
+    if (wallet.account) {
+      setIsSubscribe(checkSubscribe(account._id, id));
+      console.log(checkSubscribe(account._id, id), account._id, id);
+    }
   }, []);
 
   const getPostByAuthorId = async () => {
@@ -132,7 +153,7 @@ export const PersonalInfo = () => {
         <DetailInfo />
       </Box>
       <Box sx={{ marginTop: '10px' }}>
-        <Subscribe />
+        {!isSubscribe && <Subscribe subscriberId={account._id} idolId={id} />}
       </Box>
       <Box sx={{ width: '100%', marginTop: '10px', backgroundColor: '#fff' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -149,7 +170,14 @@ export const PersonalInfo = () => {
         <TabPanel value={value} index={0}>
           {posts &&
             posts.map((item, index) => {
-              return <PostCard postId={item._id} content={item.content} images={item.images} />;
+              return (
+                <PostCard
+                  postId={item._id}
+                  content={item.content}
+                  images={item.images}
+                  isSubscriber={isSubscribe}
+                />
+              );
             })}
         </TabPanel>
         <TabPanel value={value} index={1}>

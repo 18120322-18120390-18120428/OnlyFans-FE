@@ -17,6 +17,22 @@ const userApi = {
     const url = `user/register`;
     return await basicAxios.post(url, requestOption);
   },
+  updateUser: async (requestOption) => {
+    const url = 'user/update';
+    return await basicAxios.put(url, requestOption, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+      },
+    });
+  },
+  searchUser: async (requestOption) => {
+    const url = 'user/search';
+    return await basicAxios.post(url, requestOption, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+      },
+    });
+  },
 };
 
 export default userApi;

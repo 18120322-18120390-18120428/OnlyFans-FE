@@ -25,11 +25,9 @@ export const WalletProvider = ({ children }) => {
     useEffect(() => {
         const loadProvider = async () => {
             const provider = await detectEthereumProvider()
-            const contract = await loadContract("OnlyFans", provider)
-            console.log(contract);
-            // debugger
 
             if (provider) {
+                const contract = await loadContract("OnlyFans", provider)
                 setAccountList(provider)
                 setWeb3Api({
                     web3: new Web3(provider),

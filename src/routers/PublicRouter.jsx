@@ -33,7 +33,7 @@ export const PublicRouter = ({
     };
 
     fecthInfo();
-  }, [location]);
+  }, [location, dispatch]);
 
   const renderLayout = () => {
     if (!isFetch) {

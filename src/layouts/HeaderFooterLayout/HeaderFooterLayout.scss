@@ -1,6 +1,6 @@
 .header-footer::before,
 .header-footer::after {
-  content: '';
+  content: "";
   display: table;
 }
 
@@ -59,6 +59,7 @@
 
   &__main {
     border-left: 1px solid rgba(138, 150, 163, 0.25);
+    border-right: 1px solid rgba(138, 150, 163, 0.25);
     z-index: inherit;
     margin-left: auto;
     margin-right: auto;

@@ -87,7 +87,7 @@ export const CreatePost = () => {
             draggable: true,
             progress: undefined,
           });
-          navigate(`/${account._id}`);
+          navigate(`/user/${account.nickName}`);
           setIsSubmitting(!isSubmitting);
         } else {
           toast.warning(`Create post failed`, {

@@ -69,6 +69,7 @@ export const Register = () => {
     });
     return;
   };
+  
   const onSubmit = async (values) => {
     toast('Đang xử lý', {
       position: 'top-right',

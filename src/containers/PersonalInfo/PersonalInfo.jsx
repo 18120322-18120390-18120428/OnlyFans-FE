@@ -4,6 +4,7 @@ import './PersonalInfo.scss';
 import PropTypes from 'prop-types';
 import postApi from '../../services/postAxios';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { DetailInfo, MediaCard, PostCard, Subscribe } from '../../components';
 
 import { Tabs, Tab, Typography, Box } from '@mui/material';
@@ -48,18 +49,14 @@ function a11yProps(index) {
 export const PersonalInfo = () => {
   const [value, setValue] = useState(0);
   const [posts, setPosts] = useState([]);
-  const { id } = useParams();
+  const account = useSelector((state) => state.userSlice.account);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  useEffect(() => {
-    getPostByAuthorId();
-  }, []);
-
   const getPostByAuthorId = async () => {
-    const data = await postApi.getPostByAuthorId(`${id}`);
+    const data = await postApi.getPostByAuthorId(`${account._id}`);
     console.log(data, process.env.PATH_CLOUDINARY);
     data.data.map((item, index) => {
       let temp = item;
@@ -73,6 +70,12 @@ export const PersonalInfo = () => {
 
     setPosts([...posts]);
   };
+
+  useEffect(() => {
+    if (account) {
+      getPostByAuthorId();
+    }
+  }, [account]);
 
   const images = [
     '',
@@ -114,13 +117,14 @@ export const PersonalInfo = () => {
             <Typography
               sx={{ fontSize: '19px', fontWeight: '600', display: 'flex', alignItems: 'center' }}
             >
-              Yubook
+              {account.name}
               <VerifiedOutlinedIcon sx={{ height: '19px', width: '19px', marginLeft: '1px' }} />
             </Typography>
             <Typography
               sx={{ fontSize: '14px', color: '#fff', display: 'flex', alignItems: 'center' }}
             >
-              @Yubook <CircleIcon sx={{ width: '4px', height: '4px', margin: '0 8px' }} />1 tỷ likes
+              {`@${account.nickName}`}
+              <CircleIcon sx={{ width: '4px', height: '4px', margin: '0 8px' }} />1 tỷ likes
             </Typography>
           </Box>
         </Box>
@@ -129,7 +133,12 @@ export const PersonalInfo = () => {
         </Box>
       </Box>
       <Box sx={{ top: 0, transform: 'translateY(-58px)' }}>
-        <DetailInfo />
+        <DetailInfo
+          name={account.name}
+          nickName={account.nickName}
+          avatar={account.avatar}
+          background={account.background}
+        />
       </Box>
       <Box sx={{ marginTop: '10px' }}>
         <Subscribe />

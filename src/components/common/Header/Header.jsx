@@ -3,6 +3,7 @@ import './Header.scss';
 
 import { Link, useNavigate } from 'react-router-dom';
 import { Sidebar } from '../Sidebar/Sidebar';
+import { useSelector } from 'react-redux';
 
 import { AiOutlineHome } from 'react-icons/ai';
 import { IoNotificationsOutline } from 'react-icons/io5';
@@ -10,13 +11,13 @@ import { BiMessageSquareDetail } from 'react-icons/bi';
 import { BsBookmark, BsListStars, BsCreditCard } from 'react-icons/bs';
 import { MdSubscriptions } from 'react-icons/md';
 import { CgProfile, CgMoreO } from 'react-icons/cg';
-import { Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
 export const Header = () => {
   const className = 'header';
   const [active, setActive] = useState(0);
   const history = useNavigate();
+  const account = useSelector((state) => state.userSlice.account);
   // const onClickCreateNewPost = () => {
   //   history.push('/create-post');
   // };
@@ -59,7 +60,7 @@ export const Header = () => {
     {
       title: 'My Profile',
       icon: <CgProfile size={32} />,
-      url: '/',
+      url: `/user/${account.nickName}`,
     },
     {
       title: 'More',
@@ -86,7 +87,8 @@ export const Header = () => {
           </Link>
         );
       })}
-      <Link to={'/create-post'}
+      <Link
+        to={'/create-post'}
         className={`${className}__item `}
         style={{
           backgroundColor: '#00aff0',
@@ -94,21 +96,12 @@ export const Header = () => {
           borderRadius: '1000px',
           cursor: 'pointer',
         }}
-        
       >
         <span className={`${className}__icon`}>
           <AddIcon />
         </span>
         <span className={`${className}__text`}>New Post</span>
       </Link>
-      {/* <Button
-        variant="contained"
-        fullWidth
-        startIcon={<AddIcon />}
-        sx={{ borderRadius: '1000px', mt: 1, height: '48px' }}
-      >
-        New Post
-      </Button> */}
     </nav>
   );
 };

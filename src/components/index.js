@@ -5,3 +5,6 @@ export * from './ConnectWalletModal/ConnectWalletModal';
 export * from './MediaCard/MediaCard';
 export * from './PostCard/PostCard';
 export * from './PostForm/PostForm';
+export * from './EditUser/EditUser';
+export * from './ItemSearch/ItemSearch';
+export * from './BoxSearch/BoxSearch';

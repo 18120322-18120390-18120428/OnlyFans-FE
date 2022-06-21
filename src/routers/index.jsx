@@ -6,7 +6,15 @@ import { PublicRouter } from './PublicRouter';
 import { PrivateRouter } from './PrivateRouter';
 
 import { Header, Footer } from '../components';
-import { Home, Login, PersonalInfo, Register, CreatePost } from '../containers';
+import {
+  Home,
+  Login,
+  PersonalInfo,
+  Register,
+  CreatePost,
+  EditProfile,
+  Search,
+} from '../containers';
 
 export const Routers = () => {
   return (
@@ -36,7 +44,7 @@ export const Routers = () => {
         />
         <Route
           exact={true}
-          path={'/:id'}
+          path={'/user/:id'}
           element={
             <PrivateRouter
               component={PersonalInfo}
@@ -52,6 +60,30 @@ export const Routers = () => {
           element={
             <PrivateRouter
               component={CreatePost}
+              layout={HeaderFooterLayout}
+              header={Header}
+              footer={Footer}
+            />
+          }
+        />
+        <Route
+          exact={true}
+          path={'/edit-profile'}
+          element={
+            <PrivateRouter
+              component={EditProfile}
+              layout={HeaderFooterLayout}
+              header={Header}
+              footer={Footer}
+            />
+          }
+        />
+        <Route
+          exact={true}
+          path={'/search/:query'}
+          element={
+            <PrivateRouter
+              component={Search}
               layout={HeaderFooterLayout}
               header={Header}
               footer={Footer}

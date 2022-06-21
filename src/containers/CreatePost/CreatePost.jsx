@@ -65,45 +65,53 @@ export const CreatePost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  setIsSubmitting(!isSubmitting);
-    if (account) {
-      const res = await walletApi.getOneByHolderId(account._id);
-      if (res) {
-        const formData = {
-          authorId: account._id,
-          content: content,
-          images: imageList,
-          fee: 0,
-        };
-        const data = await postApi.createPost(formData);
-        console.log(data);
-        if (data.status === 200) {
-          toast.success(`Create post success`, {
-            position: 'bottom-left',
-            autoClose: 4000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          navigate(`/user/${account.nickName}`);
-          setIsSubmitting(!isSubmitting);
+    setIsSubmitting(true);
+    try {
+      if (account) {
+        const res = await walletApi.getOneByHolderId(account._id);
+        console.log(res);
+        if (res.status === 200) {
+          const formData = {
+            authorId: account._id,
+            content: content,
+            images: imageList,
+            fee: 0,
+          };
+          const data = await postApi.createPost(formData);
+          console.log(data);
+          if (data.status === 200) {
+            toast.success(`Create post success`, {
+              position: 'bottom-left',
+              autoClose: 4000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+            navigate(`/user/${account.nickName}`);
+            setIsSubmitting(false);
+          } else {
+            toast.warning(`Create post failed`, {
+              position: 'bottom-left',
+              autoClose: 4000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+            setIsSubmitting(false);
+          }
         } else {
-          toast.warning(`Create post failed`, {
-            position: 'bottom-left',
-            autoClose: 4000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          setIsSubmitting(!isSubmitting);
+          setIsSubmitting(false);
+          wallet.connectWallet();
         }
-      } else {
-        wallet.connectWallet();
       }
+    } catch (error) {
+      setIsSubmitting(false);
+      wallet.connectWallet();
+      console.log(error);
     }
 
     return;

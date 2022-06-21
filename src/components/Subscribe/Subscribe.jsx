@@ -8,8 +8,9 @@ import { ConnectWalletModal } from '../ConnectWalletModal/ConnectWalletModal';
 import WalletContext from '../../contexts/WalletContext';
 import { useContext } from 'react';
 import walletApi from '../../services/walletAxios';
+import { toast } from 'react-toastify';
 
-export const Subscribe = ({ subscriberId, idolId }) => {
+export const Subscribe = ({ subscriberId, idolId, checkSubscribe, setIsSubscribe }) => {
   const [open, setOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState(0);
   const wallet = useContext(WalletContext);
@@ -28,7 +29,23 @@ export const Subscribe = ({ subscriberId, idolId }) => {
         const receiver = await walletApi.getOneByHolderId(idolId);
         console.log(receiver);
         const d = new Date();
-        wallet.addNewSubscribe(receiver.data.wallet.walletAddress, subscriberId, idolId, 1, d.getTime());
+        wallet.addNewSubscribe(
+          receiver.data.wallet.walletAddress,
+          subscriberId,
+          idolId,
+          1,
+          d.getTime(),
+        );
+        toast.success(`Successful subscription, now you can see their posts`, {
+          position: 'bottom-left',
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        setIsSubscribe(checkSubscribe(subscriberId, idolId));
       } catch (error) {
         console.log(error);
       }

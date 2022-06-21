@@ -53,7 +53,18 @@ export const WalletProvider = ({ children }) => {
         const getAccount = async () => {
             const accounts = await web3Api.web3.eth.getAccounts()
             setAccount(accounts[0])
+            if (accounts[0]) {
+                const res = addNewWalletAddress(user._id, accounts[0]);
+                console.log(res);
+            }
         }
+        window.ethereum.on('accountsChanged', function (accounts) {
+            setAccount(accounts[0])
+            if (accounts[0]) {
+                const res = addNewWalletAddress(user._id, accounts[0]);
+                console.log(res);
+            }
+          })
         web3Api.web3 && getAccount()
     }, [web3Api.web3]);
 

@@ -20,14 +20,14 @@ export const Subscribe = () => {
     setOpen(false);
     setSelectedValue(value);
   };
-  const handleSubscribe = () =>{
+  const handleSubscribe = () => {
     console.log(wallet);
-    if(wallet.account){
+    if (wallet.account) {
       wallet.addFunds();
-    }else{
+    } else {
       handleClickOpen();
     }
-  }
+  };
   return (
     <>
       <Box sx={{ backgroundColor: '#fff', padding: '0 16px' }}>
@@ -151,7 +151,12 @@ export const Subscribe = () => {
             </Button>
           </AccordionDetails>
         </Accordion>
-        <ConnectWalletModal selectedValue={selectedValue} open={open} onClose={handleClose} />
+        <ConnectWalletModal
+          selectedValue={selectedValue}
+          open={open}
+          onClose={handleClose}
+          connectWallet={wallet.connectWallet}
+        />
       </Box>
     </>
   );

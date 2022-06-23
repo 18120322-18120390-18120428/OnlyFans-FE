@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import userApi from '../../services/userAxios';
+import userApi from '../../services/userApi';
 import { toast } from 'react-toastify';
 
 export const EditUser = ({ account }) => {

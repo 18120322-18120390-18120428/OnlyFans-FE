@@ -23,7 +23,7 @@ import { Formik, useFormik } from 'formik';
 import * as Yup from 'yup';
 
 import { toast } from 'react-toastify';
-import userApi from '../../services/userAxios';
+import userApi from '../../services/userApi';
 
 export const Register = () => {
   const className = 'register';

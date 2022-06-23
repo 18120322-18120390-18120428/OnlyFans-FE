@@ -1,37 +1,45 @@
-import React, { useEffect, useState } from 'react';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
+import React, { useState } from 'react';
+
 import { red } from '@mui/material/colors';
-import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
-import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
-import { Button } from '@mui/material';
+import {
+  Button,
+  Box,
+  Menu,
+  MenuItem,
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+  Avatar,
+  IconButton,
+  Typography,
+} from '@mui/material';
 import ImageGrid from '../ImageGrid/ImageGrid';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
+import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
+import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
+
 import { toast } from 'react-toastify';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+
 export const PostCard = ({ postId, content, images, isSubscriber = false }) => {
   const [isLock, setIsLock] = useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   const onClickCopyLinkToPost = () => {
     navigator.clipboard.writeText(postId);
     toast.success(`Link to profile was copied to clipboard!`, {
@@ -44,6 +52,7 @@ export const PostCard = ({ postId, content, images, isSubscriber = false }) => {
       progress: undefined,
     });
   };
+
   return (
     <Card
       sx={{
@@ -64,7 +73,7 @@ export const PostCard = ({ postId, content, images, isSubscriber = false }) => {
             <Typography sx={{ color: '#8a96a3', fontSize: '14px', marginRight: '4px' }}>
               Jan 1
             </Typography>
-            <IconButton aria-label="settings" sx={{minWidth: '45px'}}>
+            <IconButton aria-label="settings" sx={{ minWidth: '45px' }}>
               <span
                 id="basic-button"
                 aria-controls={open ? 'basic-menu' : undefined}
@@ -186,6 +195,7 @@ export const PostCard = ({ postId, content, images, isSubscriber = false }) => {
           </Box>
         </Box>
       )}
+      
       <CardActions disableSpacing sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box>
           <IconButton aria-label="add to favorites">
@@ -206,7 +216,7 @@ export const PostCard = ({ postId, content, images, isSubscriber = false }) => {
         </IconButton>
       </CardActions>
       <Typography sx={{ marginLeft: '15px', fontSize: '14px', color: '#000' }}>
-        1 tỷ likes
+        <b>0</b> likes
       </Typography>
     </Card>
   );

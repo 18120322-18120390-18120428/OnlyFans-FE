@@ -9,7 +9,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 import { Link } from 'react-router-dom';
 
-export const DetailInfo = ({ name, nickName, avatar, background }) => {
+export const DetailInfo = ({ name, nickName, avatar, background, job, isAccount }) => {
   return (
     <>
       <Box
@@ -52,56 +52,60 @@ export const DetailInfo = ({ name, nickName, avatar, background }) => {
                 @{nickName} <CircleIcon sx={{ width: '4px', height: '4px', margin: '0 8px' }} />
                 Last seen 7 hours ago
               </Typography>
-              <Typography>I am photographer...</Typography>
-              <Button>More info</Button>
+              {job && <Typography>I am {job}</Typography>}            
             </Box>
           </Grid>
           <Grid item xs={4}>
             <Box sx={{ paddingTop: '48px', float: 'right' }}>
-              <Link to="/edit-profile" style={{ textDecoration: 'none' }}>
-                <Button
-                  sx={{
-                    border: '1px solid #ccc',
-                    borderRadius: '1000px',
-                    width: '160px !important',
-                    minWidth: '48px',
-                    height: '48px',
-                    color: '#00aff0',
-                    marginRight: '10px',
-                    textDecoration: 'none',
-                  }}
-                >
-                  <SettingsIcon />
-                  <span style={{ textTransform: 'uppercase', fontWeight: '500' }}>
-                    Edit Profile
-                  </span>
-                </Button>
-              </Link>
-              {/* <Button
-                sx={{
-                  border: '1px solid #ccc',
-                  borderRadius: '1000px',
-                  width: '48px !important',
-                  minWidth: '48px',
-                  height: '48px',
-                  color: '#00aff0',
-                  marginRight: '10px',
-                }}
-              >
-                <StarBorderPurple500OutlinedIcon />
-              </Button> */}
-              {/* <Button
-                sx={{
-                  border: '1px solid #ccc',
-                  borderRadius: '1000px',
-                  width: '48px !important',
-                  minWidth: '48px',
-                  height: '48px',
-                  color: '#00aff0',
-                }}
-              >
-                <ShareIcon />
-              </Button> */}
+              {isAccount ? (
+                <Link to="/edit-profile" style={{ textDecoration: 'none' }}>
+                  <Button
+                    sx={{
+                      border: '1px solid #ccc',
+                      borderRadius: '1000px',
+                      width: '160px !important',
+                      minWidth: '48px',
+                      height: '48px',
+                      color: '#00aff0',
+                      marginRight: '10px',
+                      textDecoration: 'none',
+                    }}
+                  >
+                    <SettingsIcon />
+                    <span style={{ textTransform: 'uppercase', fontWeight: '500' }}>
+                      Edit Profile
+                    </span>
+                  </Button>
+                </Link>
+              ) : (
+                <>
+                  <Button
+                    sx={{
+                      border: '1px solid #ccc',
+                      borderRadius: '1000px',
+                      width: '48px !important',
+                      minWidth: '48px',
+                      height: '48px',
+                      color: '#00aff0',
+                      marginRight: '10px',
+                    }}
+                  >
+                    <StarBorderPurple500OutlinedIcon />
+                  </Button>
+                  <Button
+                    sx={{
+                      border: '1px solid #ccc',
+                      borderRadius: '1000px',
+                      width: '48px !important',
+                      minWidth: '48px',
+                      height: '48px',
+                      color: '#00aff0',
+                    }}
+                  >
+                    <ShareIcon />
+                  </Button>
+                </>
+              )}
             </Box>
           </Grid>
         </Grid>

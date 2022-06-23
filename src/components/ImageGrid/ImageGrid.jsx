@@ -202,7 +202,7 @@ class ImageGrid extends Component {
     const { modal, index, countFrom } = this.state;
     const { images } = this.props;
     const imagesToShow = [...images];
-    console.log(this.props);
+    
     if (countFrom && images.length > countFrom) {
       imagesToShow.length = countFrom;
     }

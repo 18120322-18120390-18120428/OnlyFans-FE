@@ -27,11 +27,14 @@ import { BsBookmark, BsListStars, BsCreditCard, BsBank2 } from 'react-icons/bs';
 import { FiSettings } from 'react-icons/fi';
 
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export const Sidebar = () => {
   const [state, setState] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const account = useSelector((state) => state.userSlice.account);
+
   const listFunctions = [
     [
       {
@@ -85,7 +88,7 @@ export const Sidebar = () => {
     setState(open);
   };
 
-  const userInfo = () => {
+  const userInfo = (account) => {
     return (
       <List>
         <CardHeader
@@ -98,10 +101,7 @@ export const Sidebar = () => {
                 horizontal: 'right',
               }}
             >
-              <Avatar
-                alt="Ted talk"
-                src="https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg"
-              />
+              <Avatar alt={account.name} src={account.avatar} />
             </Badge>
           }
           action={
@@ -109,8 +109,8 @@ export const Sidebar = () => {
               <KeyboardArrowDownIcon />
             </IconButton>
           }
-          title={'Nguyễn Hà Anh Kiểm'}
-          subheader={'@u243141803'}
+          title={account.name}
+          subheader={`@${account.nickName}`}
         />
         <Menu
           anchorEl={anchorEl}
@@ -149,14 +149,9 @@ export const Sidebar = () => {
         >
           <MenuItem>
             <CardHeader
-              avatar={
-                <Avatar
-                  alt="Ted talk"
-                  src="https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg"
-                />
-              }
-              title={'Nguyễn Hà Anh Kiểm'}
-              subheader={'@u243141803'}
+              avatar={<Avatar alt={account.name} src={account.avatar} />}
+              title={account.name}
+              subheader={account.email}
             />
           </MenuItem>
           <Divider />
@@ -195,17 +190,19 @@ export const Sidebar = () => {
   );
 
   return (
-    <React.Fragment key="sidebar">
-      <Button onClick={toggleDrawer(true)}>
-        <Avatar>K</Avatar>
-      </Button>
-      <Drawer anchor="left" open={state} onClose={toggleDrawer(false)} variant="temporary">
-        <Box sx={{ width: 300 }} role="presentation" onKeyDown={toggleDrawer(false)}>
-          {userInfo()}
-          <Divider />
-          {listFunctions.map((item)=> list(item))}
-        </Box>
-      </Drawer>
-    </React.Fragment>
+    account && (
+      <React.Fragment key="sidebar">
+        <Button onClick={toggleDrawer(true)}>
+          <Avatar alt={account.name} src={account.avatar} />
+        </Button>
+        <Drawer anchor="left" open={state} onClose={toggleDrawer(false)} variant="temporary">
+          <Box sx={{ width: 300 }} role="presentation" onKeyDown={toggleDrawer(false)}>
+            {userInfo(account)}
+            <Divider />
+            {listFunctions.map((item) => list(item))}
+          </Box>
+        </Drawer>
+      </React.Fragment>
+    )
   );
 };

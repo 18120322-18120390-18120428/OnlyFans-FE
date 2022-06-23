@@ -1,27 +1,28 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useContext } from 'react';
+
 import { Button, Box, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 import { Link, useNavigate } from 'react-router-dom';
-import detectEthereumProvider from '@metamask/detect-provider';
-import Web3 from 'web3';
-import { loadContract } from '../../utils/load-contract';
-import { toast } from 'react-toastify';
 import { PostForm } from '../../components';
-import postApi from '../../services/postAxios';
+import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
-import { useContext } from 'react';
 import WalletContext from '../../contexts/WalletContext';
-import walletApi from '../../services/walletAxios';
+
+import postApi from '../../services/postApi';
+import walletApi from '../../services/walletApi';
 
 export const CreatePost = () => {
-  const history = useNavigate();
+  const navigate = useNavigate();
+  const wallet = useContext(WalletContext);
+  const account = useSelector((state) => state.userSlice.account);
+
   const [content, setContent] = useState('');
   const [imageList, setImageList] = useState([]);
   const [index, setIndex] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const account = useSelector((state) => state.userSlice.account);
-  const wallet = useContext(WalletContext);
-  const navigate = useNavigate();
+  const [amount, setAmount] = useState(false);
+
   const onSelectFile = (e, i) => {
     const objectUrl = URL.createObjectURL(e.target.files[0]);
     const readerImage = new FileReader();
@@ -66,19 +67,21 @@ export const CreatePost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+
     try {
       if (account) {
         const res = await walletApi.getOneByHolderId(account._id);
-        console.log(res);
+        
         if (res.status === 200) {
           const formData = {
             authorId: account._id,
             content: content,
             images: imageList,
-            fee: 0,
+            fee: amount,
           };
+          
           const data = await postApi.createPost(formData);
-          console.log(data);
+          
           if (data.status === 200) {
             toast.success(`Create post success`, {
               position: 'bottom-left',
@@ -115,15 +118,6 @@ export const CreatePost = () => {
     }
 
     return;
-  };
-  const onClickBack = () => {
-    if (history.action === 'PUSH') {
-      history.goBack();
-    } else {
-      history.push({
-        pathname: `/`,
-      });
-    }
   };
 
   return (
@@ -234,6 +228,8 @@ export const CreatePost = () => {
         onSelectFile={onSelectFile}
         handleClearAllImage={handleClearAllImage}
         handleSubmit={handleSubmit}
+        amount={amount}
+        setAmount={setAmount}
       />
     </Box>
   );

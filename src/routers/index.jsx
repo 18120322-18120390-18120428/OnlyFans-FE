@@ -44,7 +44,7 @@ export const Routers = () => {
         />
         <Route
           exact={true}
-          path={'/user/:id'}
+          path={'/user/:username'}
           element={
             <PrivateRouter
               component={PersonalInfo}

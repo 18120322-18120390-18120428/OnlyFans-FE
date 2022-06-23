@@ -8,6 +8,7 @@ contract OnlyFans {
         uint amount;
         uint date;
     }
+
     receive() external payable {}
     uint commissionPercentage = 10;
     mapping(string => bool) public isSubscribes;
@@ -19,13 +20,13 @@ contract OnlyFans {
         isSubscribes[index] = true; 
         payable(receiver).transfer(amount * (100 - commissionPercentage) / 100);
     }
+
     function checkSubscribe(string memory subscriberId, string memory idolId) external view returns (bool){
         string memory index = string(abi.encodePacked(subscriberId, idolId));
         if(isSubscribes[index]){
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-
 }

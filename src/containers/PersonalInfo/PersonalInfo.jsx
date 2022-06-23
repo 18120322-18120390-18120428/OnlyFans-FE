@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import './PersonalInfo.scss';
 
-import PropTypes from 'prop-types';
-import postApi from '../../services/postAxios';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { DetailInfo, MediaCard, PostCard, Subscribe } from '../../components';
-import { Tabs, Tab, Typography, Box, Button } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
-import CircleIcon from '@mui/icons-material/Circle';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import postApi from '../../services/postApi';
+import userApi from '../../services/userApi';
 import WalletContext from '../../contexts/WalletContext';
-import { useContext } from 'react';
+
+import PropTypes from 'prop-types';
+import { Tabs, Tab, Typography, Box, Button } from '@mui/material';
+import CircleIcon from '@mui/icons-material/Circle';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -48,73 +49,99 @@ function a11yProps(index) {
 }
 
 export const PersonalInfo = () => {
-  const [value, setValue] = useState(0);
-  const [posts, setPosts] = useState([]);
-  const { id } = useParams();
+  const { username } = useParams();
+  const navigate = useNavigate();
   const wallet = useContext(WalletContext);
   const account = useSelector((state) => state.userSlice.account);
+
+  const [value, setValue] = useState(0);
+  const [posts, setPosts] = useState([]);
   const [isSubscribe, setIsSubscribe] = useState(false);
   const [top, setTop] = useState(-100);
+  const [id, setId] = useState('');
+  const [infoUser, setInfoUser] = useState(null);
+
+  // Get Info User By NickName
+  useEffect(() => {
+    const getUser = async (nickName) => {
+      try {
+        const user = await userApi.getUser({ nickName: nickName });
+
+        if (user.data) {
+          setId(user.data._id);
+          setInfoUser(user.data);
+        } else {
+          setId(null);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getUser(username);
+  }, [username]);
+
+  // Check nickname exist
+  useEffect(() => {
+    if (id === null) {
+      navigate('/');
+    }
+  }, [id]);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  useEffect(() => {
-    if (account._id === id) {
-      setIsSubscribe(true);
-    }
-  }, [account._id, isSubscribe]);
   const checkSubscribe = async (subscriberId, idolId) => {
     return await wallet.checkSubscribe(subscriberId, idolId);
   };
 
   useEffect(() => {
-    console.log(wallet);
-    if (wallet.account) {
-      setIsSubscribe(checkSubscribe(account._id, id));
-      console.log(checkSubscribe(account._id, id), account._id, id);
+    if (id) {
+      if (account._id === id) {
+        setIsSubscribe(true);
+      } else if (wallet.account) {
+        setIsSubscribe(checkSubscribe(account._id, id));
+      }
     }
-  }, []);
-
-  const getPostByAuthorId = async () => {
-    const data = await postApi.getPostByAuthorId(`${account._id}`);
-    console.log(data, process.env.PATH_CLOUDINARY);
-    data.data.map((item, index) => {
-      let temp = item;
-      temp.images = [];
-      console.log(temp);
-      item.image.map((item) =>
-        temp.images.push(`https://res.cloudinary.com/ndh/image/upload/v1639223470/${item.url}`),
-      );
-      posts.push(temp);
-    });
-
-    setPosts([...posts]);
-  };
+  }, [account._id, id, wallet]);
 
   useEffect(() => {
-    if (account) {
+    const getPostByAuthorId = async () => {
+      const data = await postApi.getPostByAuthorId(`${id}`);
+
+      data.data.map((item) => {
+        let temp = item;
+        temp.images = [];
+
+        item.image.map((item) =>
+          temp.images.push(`https://res.cloudinary.com/ndh/image/upload/v1639223470/${item.url}`),
+        );
+        posts.push(temp);
+      });
+
+      setPosts([...[], ...posts]);
+    };
+
+    if (id) {
       getPostByAuthorId();
     }
-  }, [account]);
+  }, [id]);
 
   useEffect(() => {
-    console.log(document.documentElement.scrollTop, document.body.scrollTop);
-    try {
-      window.onscroll = function () {
-        scrollFunction();
-      };
-    } catch (error) {
-      console.log(error);
+    function scrollFunction() {
+      if (document.body.scrollTop > 150 || document.documentElement.scrollTop > 150) {
+        setTop(15);
+      } else {
+        setTop(-100);
+      }
     }
+
+    window.onscroll = function () {
+      scrollFunction();
+    };
   }, [document.body.scrollTop, document.documentElement.scrollTop, window.onscroll]);
-  function scrollFunction() {
-    if (document.body.scrollTop > 150 || document.documentElement.scrollTop > 150) {
-      setTop(0);
-    } else {
-      setTop(-100);
-    }
-  }
+
   return (
     <div className="personal-info">
       <Box
@@ -168,104 +195,132 @@ export const PersonalInfo = () => {
           <MoreVertIcon sx={{ color: '#000' }} />
         </Box>
       </Box>
-      <Box sx={{ top: 0, position: 'relative' }}>
-        <DetailInfo
-          name={account.name}
-          nickName={account.nickName}
-          avatar={account.avatar}
-          background={account.background}
-        />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            position: 'absolute',
-            top: '0',
-            height: '58px',
-            zIndex: '1000',
-            padding: '0 15px 0 0',
-            alignItems: 'center',
-            transition: 'top 0.3s',
-            width: '100%',
-            maxWidth: '570px',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Button sx={{ borderRadius: '1000px', minWidth: '37px' }}>
-              <Link to="/">
-                <ArrowBackIcon sx={{ color: '#fff' }} />
-              </Link>
-            </Button>
+
+      {infoUser && (
+        <>
+          <Box sx={{ top: 0, position: 'relative' }}>
+            {account && (
+              <DetailInfo
+                name={infoUser.name}
+                nickName={infoUser.nickName}
+                avatar={infoUser.avatar}
+                background={infoUser.background}
+                job={infoUser.job}
+                isAccount={account._id === id}
+              />
+            )}
+
             <Box
               sx={{
                 display: 'flex',
-                color: '#fff',
-                flexDirection: 'column',
-                justifyContent: 'center',
+                justifyContent: 'space-between',
+                position: 'absolute',
+                top: '0',
+                height: '58px',
+                zIndex: '1000',
+                padding: '0 15px 0 0',
+                alignItems: 'center',
+                transition: 'top 0.3s',
+                width: '100%',
+                maxWidth: '570px',
               }}
             >
-              <Typography
-                sx={{ fontSize: '19px', fontWeight: '600', display: 'flex', alignItems: 'center' }}
-              >
-                {account.name}
-                <VerifiedOutlinedIcon sx={{ height: '19px', width: '19px', marginLeft: '1px' }} />
-              </Typography>
-              <Typography
-                sx={{ fontSize: '14px', color: '#fff', display: 'flex', alignItems: 'center' }}
-              >
-                {`@${account.nickName}`}
-                <CircleIcon sx={{ width: '4px', height: '4px', margin: '0 8px' }} />1 tỷ likes
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Button sx={{ borderRadius: '1000px', minWidth: '37px' }}>
+                  <Link to="/">
+                    <ArrowBackIcon sx={{ color: '#fff' }} />
+                  </Link>
+                </Button>
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                    color: '#fff',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: '19px',
+                      fontWeight: '600',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {infoUser.name}
+                    <VerifiedOutlinedIcon
+                      sx={{ height: '19px', width: '19px', marginLeft: '1px' }}
+                    />
+                  </Typography>
+                  <Typography
+                    sx={{ fontSize: '14px', color: '#fff', display: 'flex', alignItems: 'center' }}
+                  >
+                    {`@${infoUser.nickName}`}
+                    <CircleIcon sx={{ width: '4px', height: '4px', margin: '0 8px' }} />1 tỷ likes
+                  </Typography>
+                </Box>
+              </Box>
+              <Box>
+                <MoreVertIcon sx={{ color: '#fff' }} />
+              </Box>
             </Box>
           </Box>
-          <Box>
-            <MoreVertIcon sx={{ color: '#fff' }} />
+
+          <Box sx={{ marginTop: '10px' }}>
+            {!isSubscribe && (
+              <Subscribe
+                subscriberId={account._id}
+                idolId={id}
+                checkSubscribe={checkSubscribe}
+                setIsSubscribe={setIsSubscribe}
+                infoUser={infoUser}
+              />
+            )}
           </Box>
+        </>
+      )}
+
+      {posts && (
+        <Box sx={{ width: '100%', marginTop: '10px', backgroundColor: '#fff' }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={value} onChange={handleChange} aria-label="list posts" variant="fullWidth">
+              <Tab label={`${posts.length} POSTS`} {...a11yProps(0)} />
+              <Tab label="0 MEDIA" {...a11yProps(1)} />
+            </Tabs>
+          </Box>
+          <TabPanel value={value} index={0}>
+            <div style={{ display: 'flex', flexDirection: 'column-reverse' }}>
+              {posts.map((item, index) => {
+                return (
+                  <PostCard
+                    key={index}
+                    postId={item._id}
+                    content={item.content}
+                    images={item.images}
+                    isSubscriber={isSubscribe}
+                  />
+                );
+              })}
+            </div>
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '8px',
+              }}
+            >
+              {posts.map((item, index) => {
+                return <MediaCard src={item.images} alt={item._id} key={index}></MediaCard>;
+              })}
+            </Box>
+          </TabPanel>
         </Box>
-      </Box>
-      <Box sx={{ marginTop: '10px' }}>
-        {!isSubscribe && (
-          <Subscribe
-            subscriberId={account._id}
-            idolId={id}
-            checkSubscribe={checkSubscribe}
-            setIsSubscribe={setIsSubscribe}
-          />
-        )}
-      </Box>
-      <Box sx={{ width: '100%', marginTop: '10px', backgroundColor: '#fff' }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example"
-            variant="fullWidth"
-          >
-            <Tab label="66 POSTS" {...a11yProps(0)} />
-            <Tab label="1 TỶ MEDIA" {...a11yProps(1)} />
-          </Tabs>
-        </Box>
-        <TabPanel value={value} index={0}>
-          {posts &&
-            posts.map((item, index) => {
-              return (
-                <PostCard
-                  postId={item._id}
-                  content={item.content}
-                  images={item.images}
-                  isSubscriber={isSubscribe}
-                />
-              );
-            })}
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          {/* <Box sx={{ display: 'flex', flexWrap: 'wrap', marginTop: '8px' }}>
-            {images.map((item, index) => {
-              return <MediaCard src={item} alt={item} key={index}></MediaCard>;
-            })}
-          </Box> */}
-        </TabPanel>
-      </Box>
+      )}
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { Stack, Pagination, Divider, Alert } from '@mui/material';
 import { ItemSearch, BoxSearch } from '../../components';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import userApi from '../../services/userAxios';
+import userApi from '../../services/userApi';
 
 export const Search = () => {
   const className = 'search';

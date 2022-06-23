@@ -7,20 +7,23 @@ import { useSelector } from 'react-redux';
 
 import { AiOutlineHome } from 'react-icons/ai';
 import { IoNotificationsOutline } from 'react-icons/io5';
-import { BiMessageSquareDetail } from 'react-icons/bi';
+import { BiMessageSquareDetail, BiLogOutCircle } from 'react-icons/bi';
 import { BsBookmark, BsListStars, BsCreditCard } from 'react-icons/bs';
 import { MdSubscriptions } from 'react-icons/md';
-import { CgProfile, CgMoreO } from 'react-icons/cg';
+import { CgProfile } from 'react-icons/cg';
 import AddIcon from '@mui/icons-material/Add';
 
 export const Header = () => {
   const className = 'header';
   const [active, setActive] = useState(0);
-  const history = useNavigate();
+  const navigate = useNavigate();
   const account = useSelector((state) => state.userSlice.account);
-  // const onClickCreateNewPost = () => {
-  //   history.push('/create-post');
-  // };
+
+  const handleLogout = () => {
+    localStorage.setItem('jwt', '');
+    navigate('/login');
+  };
+
   const listItems = [
     {
       title: 'Home',
@@ -62,11 +65,6 @@ export const Header = () => {
       icon: <CgProfile size={32} />,
       url: `/user/${account.nickName}`,
     },
-    {
-      title: 'More',
-      icon: <CgMoreO size={32} />,
-      url: '/',
-    },
   ];
 
   return (
@@ -81,12 +79,19 @@ export const Header = () => {
           <Link
             to={item.url}
             className={`${className}__item ${active === index ? 'header__active' : ''}`}
+            onClick={() => setActive(index)}
           >
             <span className={`${className}__icon`}>{item.icon}</span>
             <span className={`${className}__text`}>{item.title}</span>
           </Link>
         );
       })}
+      <Link to="/login" className={`${className}__item`} onClick={handleLogout}>
+        <span className={`${className}__icon`}>
+          <BiLogOutCircle size={32} />
+        </span>
+        <span className={`${className}__text`}>Logout</span>
+      </Link>
       <Link
         to={'/create-post'}
         className={`${className}__item `}

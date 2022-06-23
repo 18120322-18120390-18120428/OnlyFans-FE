@@ -1,19 +1,21 @@
+import React, { useContext } from 'react';
+
 import { Box, Button, Typography } from '@mui/material';
-import React from 'react';
 import Accordion from '@mui/material/Accordion';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { ConnectWalletModal } from '../ConnectWalletModal/ConnectWalletModal';
-import WalletContext from '../../contexts/WalletContext';
-import { useContext } from 'react';
-import walletApi from '../../services/walletAxios';
-import { toast } from 'react-toastify';
 
-export const Subscribe = ({ subscriberId, idolId, checkSubscribe, setIsSubscribe }) => {
+import { ConnectWalletModal } from '../ConnectWalletModal/ConnectWalletModal';
+import { toast } from 'react-toastify';
+import walletApi from '../../services/walletApi';
+import WalletContext from '../../contexts/WalletContext';
+
+export const Subscribe = ({ subscriberId, idolId, checkSubscribe, setIsSubscribe, infoUser }) => {
   const [open, setOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState(0);
   const wallet = useContext(WalletContext);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -22,20 +24,21 @@ export const Subscribe = ({ subscriberId, idolId, checkSubscribe, setIsSubscribe
     setOpen(false);
     setSelectedValue(value);
   };
+
   const handleSubscribe = async () => {
-    console.log(wallet);
     if (wallet.account) {
       try {
         const receiver = await walletApi.getOneByHolderId(idolId);
-        console.log(receiver);
         const d = new Date();
+
         wallet.addNewSubscribe(
           receiver.data.wallet.walletAddress,
           subscriberId,
           idolId,
-          1,
+          infoUser.amount,
           d.getTime(),
         );
+
         toast.success(`Successful subscription, now you can see their posts`, {
           position: 'bottom-left',
           autoClose: 4000,
@@ -45,6 +48,7 @@ export const Subscribe = ({ subscriberId, idolId, checkSubscribe, setIsSubscribe
           draggable: true,
           progress: undefined,
         });
+
         setIsSubscribe(checkSubscribe(subscriberId, idolId));
       } catch (error) {
         console.log(error);
@@ -53,6 +57,7 @@ export const Subscribe = ({ subscriberId, idolId, checkSubscribe, setIsSubscribe
       handleClickOpen();
     }
   };
+  
   return (
     <>
       <Box sx={{ backgroundColor: '#fff', padding: '0 16px' }}>
@@ -85,12 +90,12 @@ export const Subscribe = ({ subscriberId, idolId, checkSubscribe, setIsSubscribe
             }}
           >
             <Typography sx={{ fontSize: '14px' }}>SUBSCRIBE </Typography>
-            <Typography sx={{ textTransform: 'lowercase', fontSize: '14px' }}>
-              $20 per month
+            <Typography sx={{ textTransform: 'uppercase', fontSize: '14px' }}>
+              {infoUser.amount !== 0 ? `${infoUser.amount} ETH per month` : 'For Free'}
             </Typography>
           </Box>
         </Button>
-        <Accordion sx={{ boxShadow: 'none' }}>
+        {/* <Accordion sx={{ boxShadow: 'none' }}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
@@ -175,12 +180,13 @@ export const Subscribe = ({ subscriberId, idolId, checkSubscribe, setIsSubscribe
               </Box>
             </Button>
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
         <ConnectWalletModal
           selectedValue={selectedValue}
           open={open}
           onClose={handleClose}
           connectWallet={wallet.connectWallet}
+          infoUser={infoUser}
         />
       </Box>
     </>

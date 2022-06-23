@@ -53,6 +53,7 @@ export const PersonalInfo = () => {
   const navigate = useNavigate();
   const wallet = useContext(WalletContext);
   const account = useSelector((state) => state.userSlice.account);
+  const pathCloudinary = process.env.REACT_APP_PATH_CLOUDINARY;
 
   const [value, setValue] = useState(0);
   const [posts, setPosts] = useState([]);
@@ -114,9 +115,7 @@ export const PersonalInfo = () => {
         let temp = item;
         temp.images = [];
 
-        item.image.map((item) =>
-          temp.images.push(`https://res.cloudinary.com/ndh/image/upload/v1639223470/${item.url}`),
-        );
+        item.image.map((item) => temp.images.push(`${pathCloudinary}${item.url}`));
         posts.push(temp);
       });
 
@@ -299,6 +298,8 @@ export const PersonalInfo = () => {
                     content={item.content}
                     images={item.images}
                     isSubscriber={isSubscribe}
+                    infoUser={infoUser}
+                    amount={item.fee}
                   />
                 );
               })}

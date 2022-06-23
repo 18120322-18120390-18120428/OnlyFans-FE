@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-import { red } from '@mui/material/colors';
 import {
   Button,
   Box,
@@ -26,8 +25,9 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
-export const PostCard = ({ postId, content, images, isSubscriber = false }) => {
+export const PostCard = ({ postId, content, images, isSubscriber = false, infoUser, amount }) => {
   const [isLock, setIsLock] = useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -53,20 +53,17 @@ export const PostCard = ({ postId, content, images, isSubscriber = false }) => {
     });
   };
 
-  return (
-    <Card
-      sx={{
-        width: '100%',
-        borderRadius: '0px',
-        borderBottom: '1px solid #ccc',
-        paddingBottom: '10px',
-      }}
-    >
+  const viewInfoUser = (infoUser) => {
+    if (!infoUser) {
+      return <></>;
+    }
+
+    return (
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            ndh
-          </Avatar>
+          <Link to={`/user/${infoUser.nickName}`} style={{ textDecoration: 'none', color: '#000' }}>
+            <Avatar aria-label="recipe" src={infoUser.avatar} alt={infoUser.name} />{' '}
+          </Link>
         }
         action={
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -105,97 +102,112 @@ export const PostCard = ({ postId, content, images, isSubscriber = false }) => {
           </Box>
         }
         title={
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <strong>Nguyễn Hà Anh Kiểm</strong>
-            <VerifiedOutlinedIcon sx={{ height: '19px', width: '19px', marginLeft: '3px' }} />
-          </Box>
+          <Link to={`/user/${infoUser.nickName}`} style={{ textDecoration: 'none', color: '#000' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <strong>{infoUser.name}</strong>
+              <VerifiedOutlinedIcon sx={{ height: '19px', width: '19px', marginLeft: '3px' }} />
+            </Box>
+          </Link>
         }
-        subheader="@sevenpain"
+        subheader={`@${infoUser.nickName}`}
       />
-      <CardContent>
-        <Typography variant="body2" sx={{ color: '#000', fontSize: '15px' }}>
-          {/* happy new year !!! so happy i found this platform in 2021 & all of you. very thankful for
-          everyone who supports me and uplifts me daily! wishing you all a fun new years eve & all
-          the best in 2022. 🤍🪴 focusing on growth & new beginnings full of love. can’t wait to see
-          what the new year brings us all !! xoxo */}
-          {content}
-        </Typography>
-      </CardContent>
-      {/* <CardMedia
-        component="img"
-        height="194"
-        image="https://static.onlyfans.com/theme/onlyfans/spa/img/background.png"
-        alt="Paella dish"
-      /> */}
-      {isSubscriber ? (
+    );
+  };
+
+  const viewImages = (amount, isSubscriber, isLock, setIsLock) => {
+    if (!amount || isSubscriber) {
+      return (
         <Box sx={{ width: 'calc(100% - 20px)' }}>
           <ImageGrid images={images} />
         </Box>
-      ) : (
+      );
+    }
+
+    return (
+      <Box
+        sx={{
+          background: `url('https://static.onlyfans.com/theme/onlyfans/spa/img/background.png') 50%/cover`,
+          width: '100%',
+          height: '320px',
+        }}
+      >
         <Box
           sx={{
-            background: `url('https://static.onlyfans.com/theme/onlyfans/spa/img/background.png') 50%/cover`,
-            width: '100%',
-            height: '320px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: 'inherit',
+            flexDirection: 'column',
+            position: 'relative',
           }}
         >
+          {isLock ? (
+            <LockOutlinedIcon sx={{ height: '64px', width: '64px' }} />
+          ) : (
+            <LockOpenOutlinedIcon sx={{ height: '64px', width: '64px' }} />
+          )}
           <Box
             sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: 'inherit',
-              flexDirection: 'column',
-              position: 'relative',
+              border: '1px solid #ccc',
+              width: 'calc(100% - 32px)',
+              height: '95px',
+              bottom: '15px',
+              position: 'absolute',
+              margin: '0 15px',
+              borderRadius: '6px',
+              padding: '15px',
+              boxSizing: 'border-box',
+              fontsize: '12px',
             }}
           >
-            {isLock ? (
-              <LockOutlinedIcon sx={{ height: '64px', width: '64px' }} />
-            ) : (
-              <LockOpenOutlinedIcon sx={{ height: '64px', width: '64px' }} />
-            )}
-            <Box
-              sx={{
-                border: '1px solid #ccc',
-                width: 'calc(100% - 32px)',
-                height: '95px',
-                bottom: '15px',
-                position: 'absolute',
-                margin: '0 15px',
-                borderRadius: '6px',
-                padding: '15px',
-                boxSizing: 'border-box',
-                fontsize: '12px',
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <ImageOutlinedIcon sx={{ height: '12px', width: '12px' }} />
-                <span style={{ fontSize: '12px', marginLeft: '3px' }}>2</span>
-              </Box>
-
-              <Button
-                sx={{
-                  width: '100%',
-                  backgroundColor: '#00aff0',
-                  borderRadius: '1000px',
-                  color: '#fff',
-                  fontWeight: 500,
-                  marginTop: '10px',
-                  '&:hover': {
-                    backgroundColor: '#00aff0',
-                    opacity: 0.7,
-                  },
-                }}
-                onMouseOver={() => setIsLock(!isLock)}
-                onMouseOut={() => setIsLock(!isLock)}
-              >
-                Subscribe to see user's posts
-              </Button>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <ImageOutlinedIcon sx={{ height: '12px', width: '12px' }} />
+              <span style={{ fontSize: '12px', marginLeft: '3px' }}>{images.length}</span>
             </Box>
+
+            <Button
+              sx={{
+                width: '100%',
+                backgroundColor: '#00aff0',
+                borderRadius: '1000px',
+                color: '#fff',
+                fontWeight: 500,
+                marginTop: '10px',
+                '&:hover': {
+                  backgroundColor: '#00aff0',
+                  opacity: 0.7,
+                },
+              }}
+              onMouseOver={() => setIsLock(!isLock)}
+              onMouseOut={() => setIsLock(!isLock)}
+            >
+              Subscribe to see user's posts
+            </Button>
           </Box>
         </Box>
-      )}
-      
+      </Box>
+    );
+  };
+
+  return (
+    <Card
+      sx={{
+        width: '100%',
+        borderRadius: '0px',
+        borderBottom: '1px solid #ccc',
+        paddingBottom: '10px',
+      }}
+    >
+      {viewInfoUser(infoUser)}
+
+      <CardContent>
+        <Typography variant="body2" sx={{ color: '#000', fontSize: '15px' }}>
+          {content}
+        </Typography>
+      </CardContent>
+
+      {viewImages(amount, isSubscriber, isLock, setIsLock)}
+
       <CardActions disableSpacing sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box>
           <IconButton aria-label="add to favorites">

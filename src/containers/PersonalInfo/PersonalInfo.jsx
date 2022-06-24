@@ -94,15 +94,18 @@ export const PersonalInfo = () => {
   };
 
   const checkSubscribe = async (subscriberId, idolId) => {
-    return await wallet.checkSubscribe(subscriberId, idolId);
+    const res = await wallet.checkSubscribe(subscriberId, idolId);
+    setIsSubscribe(res);
+    return res;
   };
 
   useEffect(() => {
     if (id) {
       if (account._id === id) {
         setIsSubscribe(true);
-      } else if (wallet.account) {
-        setIsSubscribe(checkSubscribe(account._id, id));
+      } else {
+        console.log(account._id, id, checkSubscribe(account._id, id));
+        checkSubscribe(account._id, id);
       }
     }
   }, [account._id, id, wallet]);

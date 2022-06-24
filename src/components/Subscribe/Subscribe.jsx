@@ -31,25 +31,27 @@ export const Subscribe = ({ subscriberId, idolId, checkSubscribe, setIsSubscribe
         const receiver = await walletApi.getOneByHolderId(idolId);
         const d = new Date();
 
-        wallet.addNewSubscribe(
+        const res = await wallet.addNewSubscribe(
           receiver.data.wallet.walletAddress,
           subscriberId,
           idolId,
           infoUser.amount,
           d.getTime(),
         );
+        console.log(res);
+        if (res !== false) {
+          toast.success(`Successful subscription, now you can see their posts`, {
+            position: 'bottom-left',
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
 
-        toast.success(`Successful subscription, now you can see their posts`, {
-          position: 'bottom-left',
-          autoClose: 4000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-
-        setIsSubscribe(checkSubscribe(subscriberId, idolId));
+          checkSubscribe(subscriberId, idolId);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -57,7 +59,7 @@ export const Subscribe = ({ subscriberId, idolId, checkSubscribe, setIsSubscribe
       handleClickOpen();
     }
   };
-  
+
   return (
     <>
       <Box sx={{ backgroundColor: '#fff', padding: '0 16px' }}>
@@ -67,7 +69,7 @@ export const Subscribe = ({ subscriberId, idolId, checkSubscribe, setIsSubscribe
           SUBCRIPTION
         </Typography>
         <Button
-          onClick={handleSubscribe}
+          onClick={() => handleSubscribe()}
           sx={{
             width: '100%',
             backgroundColor: '#00aff0',

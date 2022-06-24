@@ -18,7 +18,7 @@ export const WalletProvider = ({ children }) => {
   const [account, setAccount] = useState(null);
   const [balance, setBalance] = useState(null);
   const user = useSelector((state) => state.userSlice.account);
-
+  const isAccount = useSelector((state) => state.userSlice.isAccount);
   const setAccountLister = (provider) => {
     provider.on('accountChanged', (accounts) => setAccount(accounts[0]));
   };
@@ -65,8 +65,8 @@ export const WalletProvider = ({ children }) => {
         console.log(res);
       }
     });
-    web3Api.web3 && getAccount();
-  }, [web3Api.web3]);
+    web3Api.web3 && isAccount && getAccount();
+  }, [web3Api.web3, isAccount]);
 
   useEffect(() => {
     const loadBalance = async () => {
@@ -109,8 +109,14 @@ export const WalletProvider = ({ children }) => {
   );
   const checkSubscribe = async (subscriberId, idolId) => {
     const { contract } = web3Api;
-    const res = await contract.checkSubscribe(subscriberId, idolId);
-    return res;
+    console.log(contract, subscriberId, idolId);
+    if (contract) {
+      const res = await contract.checkSubscribe(subscriberId, idolId);
+      console.log(res);
+      return res;
+    } else {
+      return false;
+    }
   };
   const addNewWalletAddress = async (holderId, walletAddress) => {
     const res = await walletApi.addWalletAddress({

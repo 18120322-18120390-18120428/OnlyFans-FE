@@ -80,27 +80,12 @@ export const WalletProvider = ({ children }) => {
     const accounts = await web3Api.web3.eth.getAccounts();
     return accounts[0];
   };
-  // const addFunds = useCallback(async (wei = 3) => {
-  //     const { contract, web3 } = web3Api
-  //     await contract.addFunds({
-  //         from: account,
-  //         value: web3.utils.toWei(String(wei), "ether")
-  //     })
-
-  // }, [web3Api, account])
-
-  // const withdraw = async (wei = 3) => {
-  //     const { contract, web3 } = web3Api
-  //     const withdrawAmount = web3.utils.toWei(String(wei), "ether")
-  //     await contract.withdraw(withdrawAmount, {
-  //         from: account
-  //     })
-  // }
+  
   const addNewSubscribe = useCallback(
-    async (receiver, subscriberId, idolId, amount = 0, date) => {
+    async (receiver, subscriberId, idolId, amount = 0, licenseType, lifeTime) => {
       const { contract, web3 } = web3Api;
       const wei = web3.utils.toWei(String(amount), 'ether');
-      await contract.addNewSubscribe(receiver, subscriberId, idolId, wei, date, {
+      await contract.addNewSubscribe(receiver, subscriberId, idolId, wei, licenseType, lifeTime, {
         from: account,
         value: wei,
       });

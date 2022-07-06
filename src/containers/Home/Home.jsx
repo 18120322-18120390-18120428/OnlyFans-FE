@@ -33,7 +33,10 @@ export const Home = () => {
             if (item.infoUser._id === account._id) {
               temp.isSubscriber = true;
             } else if (wallet.account) {
-              temp.isSubscriber = checkSubscribe(account._id, item.infoUser._id);
+              if(checkSubscribe(account._id, item.infoUser._id) === 'VALID'){
+                temp.isSubscriber = true;
+              }
+              temp.isSubscriber = false;
             }
 
             item.image.map((item) => temp.images.push(`${pathCloudinary}${item.url}`));

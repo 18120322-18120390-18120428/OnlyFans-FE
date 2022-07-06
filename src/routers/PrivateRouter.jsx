@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { getInfo } from '../redux/slice/userSlice';
 import { useNavigate } from 'react-router-dom';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, Box } from '@mui/material';
 
 export const PrivateRouter = ({
   component: Component,
@@ -39,7 +39,11 @@ export const PrivateRouter = ({
 
   const renderLayout = () => {
     if (!isFetch) {
-      return <CircularProgress color="secondary" />;
+      return (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <CircularProgress color="secondary" />
+        </Box>
+      );
     }
 
     if (!isAccount) {

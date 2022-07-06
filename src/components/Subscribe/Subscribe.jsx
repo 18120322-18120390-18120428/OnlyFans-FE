@@ -25,18 +25,19 @@ export const Subscribe = ({ subscriberId, idolId, checkSubscribe, setIsSubscribe
     setSelectedValue(value);
   };
 
-  const handleSubscribe = async () => {
+  const handleSubscribe = async (amount, licenseType, lifeTime) => {
+    console.log('aa');
     if (wallet.account) {
       try {
         const receiver = await walletApi.getOneByHolderId(idolId);
-        const d = new Date();
 
         const res = await wallet.addNewSubscribe(
           receiver.data.wallet.walletAddress,
           subscriberId,
           idolId,
-          infoUser.amount,
-          d.getTime(),
+          amount,
+          licenseType,
+          lifeTime,
         );
         console.log(res);
         if (res !== false) {
@@ -69,7 +70,7 @@ export const Subscribe = ({ subscriberId, idolId, checkSubscribe, setIsSubscribe
           SUBCRIPTION
         </Typography>
         <Button
-          onClick={() => handleSubscribe()}
+          onClick={() => handleSubscribe(infoUser.amount,infoUser.amount ?  1 : 0, 1)}
           sx={{
             width: '100%',
             backgroundColor: '#00aff0',
@@ -93,96 +94,108 @@ export const Subscribe = ({ subscriberId, idolId, checkSubscribe, setIsSubscribe
           >
             <Typography sx={{ fontSize: '14px' }}>SUBSCRIBE </Typography>
             <Typography sx={{ textTransform: 'uppercase', fontSize: '14px' }}>
-              {infoUser.amount !== 0 ? `${infoUser.amount} ETH per month` : 'For Free'}
+              {infoUser.amount !== 0 ? `${infoUser.amount} ETH per 30 days` : 'For Free'}
             </Typography>
           </Box>
         </Button>
-        {/* <Accordion sx={{ boxShadow: 'none' }}>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-            sx={{ padding: '0 0 ' }}
-          >
-            <Typography
-              sx={{ color: '#8a96a3', fontSize: '16px', paddingTop: '10px', fontWeight: 500 }}
+        {infoUser.amount !== 0 ? (
+          <Accordion sx={{ boxShadow: 'none' }}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+              sx={{ padding: '0 0 ' }}
             >
-              SUBSCRIPTION BUNDLES
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ padding: '0 0 ' }}>
-            <Button
-              onClick={handleSubscribe}
-              sx={{
-                width: '100%',
-                backgroundColor: '#00aff0',
-                borderRadius: '1000px',
-                color: '#fff',
-                fontSize: '13px',
-                margin: '16px 0',
-                '&:hover': {
-                  backgroundColor: '#00aff0',
-                  opacity: 0.7,
-                },
-              }}
-            >
-              <Box
+              <Typography
+                sx={{ color: '#8a96a3', fontSize: '16px', paddingTop: '10px', fontWeight: 500 }}
+              >
+                SUBSCRIPTION BUNDLES
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ padding: '0 0 ' }}>
+              <Button
+                onClick={()=>{handleSubscribe(
+                  ((infoUser.amount * 0.8 * 100 * 3) / 100).toFixed(4),
+                  1,
+                  3,
+                )}}
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  width: 'inherit',
-                  padding: '5px 22px',
+                  width: '100%',
+                  backgroundColor: '#00aff0',
+                  borderRadius: '1000px',
+                  color: '#fff',
+                  fontSize: '13px',
+                  margin: '16px 0',
+                  '&:hover': {
+                    backgroundColor: '#00aff0',
+                    opacity: 0.7,
+                  },
                 }}
               >
-                <Typography sx={{ fontSize: '14px' }}>
-                  3 MONTHS (20%
-                  <span style={{ textTransform: 'lowercase', fontSize: '14px', marginLeft: '4px' }}>
-                    off
-                  </span>
-                  )
-                </Typography>
-                <Typography sx={{ textTransform: 'lowercase', fontSize: '14px' }}>
-                  $48 total
-                </Typography>
-              </Box>
-            </Button>
-            <Button
-              onClick={handleSubscribe}
-              sx={{
-                width: '100%',
-                backgroundColor: '#00aff0',
-                borderRadius: '1000px',
-                color: '#fff',
-                fontSize: '13px',
-                margin: '16px 0',
-                '&:hover': {
-                  backgroundColor: '#00aff0',
-                  opacity: 0.7,
-                },
-              }}
-            >
-              <Box
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: 'inherit',
+                    padding: '5px 22px',
+                  }}
+                >
+                  <Typography sx={{ fontSize: '14px' }}>
+                    90 days (20%
+                    <span
+                      style={{ textTransform: 'lowercase', fontSize: '14px', marginLeft: '4px' }}
+                    >
+                      off
+                    </span>
+                    )
+                  </Typography>
+                  <Typography sx={{ textTransform: 'uppercase', fontSize: '14px' }}>
+                    {((infoUser.amount * 0.8 * 100 * 3) / 100).toFixed(4)} ETH total
+                  </Typography>
+                </Box>
+              </Button>
+              <Button
+                onClick={()=>{handleSubscribe(((infoUser.amount * 0.65 * 100 * 6) / 100).toFixed(4), 1, 6)}}
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  width: 'inherit',
-                  padding: '5px 22px',
+                  width: '100%',
+                  backgroundColor: '#00aff0',
+                  borderRadius: '1000px',
+                  color: '#fff',
+                  fontSize: '13px',
+                  margin: '16px 0',
+                  '&:hover': {
+                    backgroundColor: '#00aff0',
+                    opacity: 0.7,
+                  },
                 }}
               >
-                <Typography sx={{ fontSize: '14px' }}>
-                  6 MONTHS (35%
-                  <span style={{ textTransform: 'lowercase', fontSize: '14px', marginLeft: '4px' }}>
-                    off
-                  </span>
-                  )
-                </Typography>
-                <Typography sx={{ textTransform: 'lowercase', fontSize: '14px' }}>
-                  $78 total
-                </Typography>
-              </Box>
-            </Button>
-          </AccordionDetails>
-        </Accordion> */}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: 'inherit',
+                    padding: '5px 22px',
+                  }}
+                >
+                  <Typography sx={{ fontSize: '14px' }}>
+                    180 days (35%
+                    <span
+                      style={{ textTransform: 'lowercase', fontSize: '14px', marginLeft: '4px' }}
+                    >
+                      off
+                    </span>
+                    )
+                  </Typography>
+                  <Typography sx={{ textTransform: 'uppercase', fontSize: '14px' }}>
+                    {((infoUser.amount * 0.65 * 100 * 6) / 100).toFixed(4)} ETH total
+                  </Typography>
+                </Box>
+              </Button>
+            </AccordionDetails>
+          </Accordion>
+        ) : (
+          <></>
+        )}
         <ConnectWalletModal
           selectedValue={selectedValue}
           open={open}

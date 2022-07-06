@@ -95,7 +95,12 @@ export const PersonalInfo = () => {
 
   const checkSubscribe = async (subscriberId, idolId) => {
     const res = await wallet.checkSubscribe(subscriberId, idolId);
-    setIsSubscribe(res);
+    if(res === 'VALID'){
+      setIsSubscribe(res);
+    } else{
+
+    }
+    
     return res;
   };
 
@@ -133,7 +138,7 @@ export const PersonalInfo = () => {
   useEffect(() => {
     function scrollFunction() {
       if (document.body.scrollTop > 150 || document.documentElement.scrollTop > 150) {
-        setTop(15);
+        setTop(0);
       } else {
         setTop(-100);
       }
@@ -154,12 +159,12 @@ export const PersonalInfo = () => {
           top: `${top}px`,
           height: '58px',
           zIndex: '1000',
-          padding: '0 15px 0 0',
+          //padding: '0 15px 0 0',
           alignItems: 'center',
           transition: 'top 0.3s',
           backgroundColor: '#fff',
           width: '100%',
-          maxWidth: '570px',
+          maxWidth: '600px',
         }}
         id="navbar"
       >
@@ -220,11 +225,9 @@ export const PersonalInfo = () => {
                 top: '0',
                 height: '58px',
                 zIndex: '1000',
-                padding: '0 15px 0 0',
                 alignItems: 'center',
                 transition: 'top 0.3s',
                 width: '100%',
-                maxWidth: '570px',
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
